@@ -30,8 +30,10 @@ código.
 Não reabra estas decisões durante o build.
 
 - Stack: Next.js 15 (App Router) + TypeScript + Tailwind + shadcn/ui.
-- LLM primário: Anthropic Claude. LLM de backup: OpenAI GPT. As duas
-  chaves existem.
+- LLM: adapter `LLMProvider` com duas implementações: `anthropic`
+  (Claude) e `openai` (GPT). Resolução: `LLM_PROVIDER` → Claude se
+  houver chave → GPT se houver chave. Uma só chave é suficiente para
+  o fluxo inteiro. Sem nenhuma chave, ingest usa fallback local.
 - Vídeo: adapter `VideoProvider` com três implementações: `openai`
   (Sora), `google` (Veo, só se houver chave) e `mock` (MP4 em cache).
 - A seleção do provider de vídeo acontece na interface, em um seletor.
@@ -268,13 +270,14 @@ DECISIONS.md
 
 | Variável | Obrigatória | Default | Uso |
 | --- | --- | --- | --- |
-| `ANTHROPIC_API_KEY` | sim | — | entrevista, ingestão, copy |
+| `ANTHROPIC_API_KEY` | não* | — | Claude (entrevista, ingestão, copy) |
 | `ANTHROPIC_MODEL` | não | `claude-sonnet-4-5` | id do modelo Claude |
-| `OPENAI_API_KEY` | sim | — | backup de LLM e vídeo Sora |
-| `OPENAI_MODEL` | não | `gpt-4o` | id do modelo GPT de backup |
+| `OPENAI_API_KEY` | não* | — | GPT e vídeo Sora |
+| `OPENAI_MODEL` | não | `gpt-4o` | id do modelo GPT |
 | `OPENAI_VIDEO_MODEL` | não | `sora-2` | id do modelo de vídeo OpenAI |
 | `GOOGLE_GENERATIVE_AI_API_KEY` | não | — | provider de vídeo Google |
 | `GOOGLE_VIDEO_MODEL` | não | `veo-3` | id do modelo de vídeo Google |
+| `LLM_PROVIDER` | não | — | força `anthropic` ou `openai` |
 | `VIDEO_PROVIDER` | não | `openai` | `openai`, `google` ou `mock` |
 | `VIDEO_CACHE_PATH` | não | `/videos/ifood-cache.mp4` | MP4 servido pelo provider mock |
 | `LANDING_PAGE_URL` | não | `https://brandloop-lp.vercel.app` | destino da campanha e do CTA |

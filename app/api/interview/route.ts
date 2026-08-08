@@ -1,13 +1,12 @@
 // app/api/interview/route.ts — caixa "Aprender": entrevista adaptativa em SSE.
-// Recebe { digest, history, partialDiagnosis, forceComplete }, chama o Claude
-// com streaming (tool use no schema do InterviewTurn) e emite um evento SSE
-// por linha no formato `data: {...}\n\n`:
+// Recebe { digest, history, partialDiagnosis, forceComplete }, chama o LLM do
+// adapter (lib/llm: Claude ou GPT) com streaming de tool use no schema do
+// InterviewTurn e emite um evento SSE por linha no formato `data: {...}\n\n`:
 //   1. eventos `token` com o texto da message (extraídos do JSON da tool use);
 //   2. um evento `turn` com o InterviewTurn completo;
 //   3. evento `error` em qualquer falha.
 // Contratos dos eventos em lib/contracts.ts (imutável).
 
-import Anthropic from '@anthropic-ai/sdk'
 import { z } from 'zod'
 
 import type {
@@ -20,10 +19,13 @@ import type {
 import {
   INTERVIEW_TOOL_NAME,
   buildInterviewSystemPrompt,
-  interviewTool,
+  interviewJsonSchema,
+  interviewToolDescription,
   interviewTurnSchema,
   partialDiagnosisSchema,
 } from '@/lib/boxes/interviewPrompt'
+import { getLLM } from '@/lib/llm'
+import type { StructuredRequest } from '@/lib/llm'
 
 export const runtime = 'nodejs'
 export const maxDuration = 120
@@ -57,57 +59,14 @@ const interviewRequestSchema = z.object({
   forceComplete: z.boolean().optional().default(false),
 })
 
-function modelId(): string {
-  return process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-5'
-}
-
-/**
- * Lê o valor do campo "message" de um JSON parcial (tolerante a JSON
- * incompleto). Usado para transmitir os tokens da fala do entrevistador
- * ao vivo, enquanto a tool use ainda está sendo gerada.
- */
-function extractMessageFromPartialJson(partialJson: string): string {
-  const keyMatch = /"message"\s*:/.exec(partialJson)
-  if (!keyMatch) return ''
-  let i = keyMatch.index + keyMatch[0].length
-  while (i < partialJson.length && /\s/.test(partialJson[i]!)) i++
-  if (partialJson[i] !== '"') return ''
-  i++
-  let out = ''
-  while (i < partialJson.length) {
-    const ch = partialJson[i]!
-    if (ch === '\\') {
-      if (i + 1 >= partialJson.length) break
-      const next = partialJson[i + 1]!
-      if (next === 'n') out += '\n'
-      else if (next === 't') out += '\t'
-      else if (next === 'r') out += '\r'
-      else if (next === 'b') out += '\b'
-      else if (next === 'f') out += '\f'
-      else if (next === 'u' && i + 5 < partialJson.length) {
-        const hex = partialJson.slice(i + 2, i + 6)
-        if (/^[0-9a-fA-F]{4}$/.test(hex)) out += String.fromCharCode(parseInt(hex, 16))
-        i += 6
-        continue
-      } else out += next
-      i += 2
-      continue
-    }
-    if (ch === '"') break
-    out += ch
-    i++
-  }
-  return out
-}
-
 /** Converte o histórico em mensagens da API, garantindo fim em role user. */
-function buildApiMessages(history: ChatMessage[]): Anthropic.MessageParam[] {
-  const mapped = history.map(
-    (message): Anthropic.MessageParam => ({
-      role: message.role === 'user' ? 'user' : 'assistant',
-      content: message.content,
-    })
-  )
+function buildApiMessages(
+  history: ChatMessage[]
+): StructuredRequest['messages'] {
+  const mapped = history.map((message) => ({
+    role: message.role,
+    content: message.content,
+  }))
   if (mapped.length === 0) {
     return [
       {
@@ -127,14 +86,6 @@ function buildApiMessages(history: ChatMessage[]): Anthropic.MessageParam[] {
     })
   }
   return mapped
-}
-
-function errorMessage(erro: unknown): string {
-  if (erro instanceof Anthropic.APIError) {
-    const status = erro.status ? ` (HTTP ${erro.status})` : ''
-    return `Falha na chamada ao modelo.${status} ${erro.message}`
-  }
-  return erro instanceof Error ? erro.message : 'Erro interno na entrevista.'
 }
 
 export async function POST(request: Request): Promise<Response> {
@@ -173,58 +124,37 @@ export async function POST(request: Request): Promise<Response> {
         }
         const input = parsed.data as InterviewRequestBody
 
-        // 2. Chave obrigatória.
-        if (!process.env.ANTHROPIC_API_KEY) {
+        // 2. Chave obrigatória (Claude ou GPT via adapter).
+        const provider = getLLM()
+        if (!provider) {
           send({
             type: 'error',
             message:
-              'ANTHROPIC_API_KEY não configurada: defina a chave para rodar a entrevista.',
+              'Nenhuma chave de LLM configurada: defina ANTHROPIC_API_KEY ou OPENAI_API_KEY.',
           })
           controller.close()
           return
         }
 
-        // 3. Claude com streaming e tool use no schema do InterviewTurn.
-        const client = new Anthropic()
-        const streamMessage = client.messages.stream({
-          model: modelId(),
-          max_tokens: 2048,
+        // 3. LLM com streaming e tool use no schema do InterviewTurn.
+        const { events, result } = provider.streamStructured({
           system: buildInterviewSystemPrompt(input),
           messages: buildApiMessages(input.history),
-          tools: [interviewTool],
-          tool_choice: { type: 'tool', name: INTERVIEW_TOOL_NAME },
+          toolName: INTERVIEW_TOOL_NAME,
+          toolDescription: interviewToolDescription,
+          jsonSchema: interviewJsonSchema,
+          maxTokens: 2048,
+          streamField: 'message',
         })
 
-        let jsonBuf = ''
-        let lastMessageLength = 0
-
-        for await (const event of streamMessage) {
-          if (event.type !== 'content_block_delta') continue
-          if (event.delta.type !== 'input_json_delta') continue
-          jsonBuf += event.delta.partial_json
-          const messageSoFar = extractMessageFromPartialJson(jsonBuf)
-          if (messageSoFar.length > lastMessageLength) {
-            send({ type: 'token', value: messageSoFar.slice(lastMessageLength) })
-            lastMessageLength = messageSoFar.length
+        for await (const event of events) {
+          if (event.value) {
+            send({ type: 'token', value: event.value })
           }
         }
 
         // 4. Turno final com o JSON completo da tool use.
-        const finalMessage = await streamMessage.finalMessage()
-        const toolUse = finalMessage.content.find(
-          (block): block is Anthropic.ToolUseBlock =>
-            block.type === 'tool_use' && block.name === INTERVIEW_TOOL_NAME
-        )
-        if (!toolUse) {
-          send({
-            type: 'error',
-            message: 'O entrevistador não devolveu um turno válido. Tente novamente.',
-          })
-          controller.close()
-          return
-        }
-
-        const turnResult = interviewTurnSchema.safeParse(toolUse.input)
+        const turnResult = interviewTurnSchema.safeParse(await result)
         if (!turnResult.success) {
           send({
             type: 'error',
@@ -238,7 +168,9 @@ export async function POST(request: Request): Promise<Response> {
         controller.close()
       } catch (erro) {
         console.error('POST /api/interview falhou:', erro)
-        send({ type: 'error', message: errorMessage(erro) })
+        const message =
+          erro instanceof Error ? erro.message : 'Erro interno na entrevista.'
+        send({ type: 'error', message })
         controller.close()
       }
     },
