@@ -1,166 +1,226 @@
 # Perguntas e respostas — treino do pitch falado
 
-> Banca de VC early-stage. Depois de 3 minutos, sobram 2 a 4 perguntas.
-> **Regra de ouro: nenhuma resposta passa de 20 segundos.** Resposta longa lê como insegurança.
-> Primeira frase responde. Segunda frase prova. Terceira, se houver, é ponte para o próximo tema.
+> Escrito para o deck de 7 slides. Banca de VC early-stage: depois dos 3 minutos
+> sobram 2 a 4 perguntas, e é nelas que a nota se decide.
+>
+> **Regra de ouro: nenhuma resposta passa de 20 segundos.** Resposta longa lê como
+> insegurança. Primeira frase responde. Segunda prova. Terceira, se houver, é ponte.
+>
+> **Quem responde é quem construiu.** Ninguém responde pela parte do outro — a banca percebe.
 
 ---
 
-## A. O produto
+## ⚠️ Três coisas para não errar ao falar
 
-**1. Isso não é só um wrapper de LLM?**
-> Um wrapper recebe briefing e devolve texto. O nosso começa entendendo a marca por dentro e
-> só depois vai conferir lá fora se é isso mesmo — leu mais de mil e quinhentas conversas reais
-> em cinco plataformas antes de escrever uma linha. O briefing é a marca falando de si mesma;
-> a gente ouve os dois lados.
+1. **`US$ 0,89` são oitenta e nove centavos de dólar.** Não "zero vírgula oitenta e
+   nove centavos". O número é bom demais para ser dito errado.
+2. **A ordem: entrevista ANTES da pesquisa de mercado.** Se inverter na fala, alguém
+   pergunta e a resposta 4 fica sem chão.
+3. **"Estágio 4 de sofisticação"** — diga uma vez, com naturalidade. É a frase que
+   nenhum outro time vai dizer hoje.
 
-**2. O que exatamente o agente faz sozinho, e em que ordem?**
-> A ordem importa. Primeiro a empresa sobe o contexto macro que quiser. Depois ele entrevista
-> as lideranças para entender a dor que ela acha que resolve. **Só então** vai ao mercado
+---
+
+## A · A tese
+
+**1. Por que abrir falando que a IA fez tudo ficar igual? Não é ruim para quem vende IA?**
+> É o contrário: é o que separa a gente de quem só gera criativo. Produzir virou
+> commodity — qualquer pessoa gera uma peça em segundos. O que ficou raro é o anúncio
+> que só poderia ser daquela marca. A gente vende a parte rara.
+
+**2. Isso não é um problema de gosto? Onde está a dor real?**
+> A dor é de atenção e de dinheiro. Anúncio que parece de todo mundo compete só no
+> lance, nunca no reconhecimento. E o dono continua trocando fornecedor todo trimestre
+> procurando alguém que entenda a marca dele — o que é caro em dinheiro e em tempo.
+
+**3. Vocês são uma ferramenta ou uma agência?**
+> Nem uma nem outra. Ferramenta espera briefing; agência cobra hora. A gente é um
+> agente que faz o trabalho inteiro e melhora a cada campanha que roda.
+
+---
+
+## B · O produto e a IA *(o critério do hackathon)*
+
+**4. O que exatamente o agente faz sozinho, e em que ordem?**
+> A ordem importa. A empresa sobe o contexto que quiser. O agente entrevista as
+> lideranças para entender a dor que ela acha que resolve. **Só então** vai ao mercado
 > verificar como ela está sendo comentada sobre aquele assunto. Aí fecha o diagnóstico,
 > escreve o roteiro, produz o criativo, sobe no anúncio e lê o funil até a venda.
-> Nenhuma etapa espera humano para começar a próxima.
 
-**3. Por que a pesquisa de mercado vem depois da entrevista, e não antes?**
-> Porque sem saber o que procurar, pesquisa de mercado vira ruído. A entrevista dá a hipótese —
-> qual dor a empresa acha que resolve. A pesquisa testa essa hipótese contra o que as pessoas
-> estão realmente dizendo. Inverter a ordem seria pedir para o agente adivinhar o assunto.
+**5. Por que a pesquisa de mercado vem depois da entrevista, e não antes?**
+> Porque sem saber o que procurar, pesquisa de mercado vira ruído. A entrevista dá a
+> hipótese — qual dor a empresa acha que resolve. A pesquisa testa essa hipótese contra
+> o que as pessoas estão realmente dizendo. Inverter seria pedir para o agente adivinhar
+> o assunto.
 
-**3b. E por que entrevistar quem vende?**
-> Porque o material institucional diz o que a empresa gostaria de ser. Quem vende sabe qual
-> objeção mata o negócio na terça-feira. São até oito perguntas, uma por vez, cada uma mirando
-> só o campo que ainda falta.
+**6. Onde a IA realmente trabalha? Não é só chamar um modelo seis vezes?**
+> Cada caixa usa uma técnica diferente. A ingestão extrai fatos **sob schema**, então não
+> pode inventar o que não está no texto. A entrevista **decide sozinha** a próxima
+> pergunta olhando quais campos ainda estão vazios. A pesquisa devolve o diagnóstico já
+> preenchido, **ancorado em post real**, com URL em cada campo. E a copy escreve com a
+> rubrica de Schwartz como **restrição tipada**: sem prova no diagnóstico, ela reformula
+> em vez de inventar.
 
-**3c. Como o agente chegou naquele criativo do iFood?**
-> Ele leu a dor antes de escrever: hora perdida na planilha e taxa que só aparece depois. Por
-> isso o criativo não promete venda — promete transparência na taxa e uma operação que o dono
-> toca sem virar a noite fazendo conta. É o ângulo que o dado pedia, não o que soaria bonito.
+**7. Isso não é só um wrapper de LLM?**
+> Um wrapper recebe briefing e devolve texto. O nosso começa entendendo a marca por
+> dentro e depois vai conferir lá fora se é isso mesmo. Leu mais de mil e quinhentas
+> conversas reais em cinco plataformas antes de escrever uma linha.
 
-**4. E se o agente escrever uma bobagem e queimar a marca?**
-> Ele opera dentro de um envelope: claims proibidos, teto de verba, temas vetados. E a regra
-> mais dura é a de prova — ele não pode afirmar número, resultado ou depoimento que não esteja
-> no material da marca. Se não tem prova, ele reformula a frase em vez de inventar.
+**8. E se o agente escrever uma bobagem e queimar a marca?**
+> Ele opera dentro de um envelope: claims proibidos, teto de verba, temas vetados. E a
+> regra mais dura é a de prova — ele não pode afirmar número, resultado ou depoimento
+> que não esteja no material da marca. Sem prova, reformula a frase.
 
-**5. Qual a diferença para AdCreative, Arcads, Creatify?**
-> Todos eles começam no briefing e param no criativo. A gente começa no mercado e vai até a
-> venda. E tem um detalhe: nós achamos um concorrente direto dentro do nosso próprio dado —
-> um cara vendendo agente de IA de precificação pro mesmo público. Isso não nos assusta,
-> valida a demanda.
+**9. O que acontece quando o funil vaza?**
+> Ele age no ponto certo. Ninguém para no vídeo, ele reescreve o gancho. Assiste e não
+> clica, ele troca a promessa. Entra na página e sai na hora, ele testa outra. Chega na
+> oferta e não fecha, ele reposiciona. Não é otimizar lance — é consertar a peça que falhou.
 
 ---
 
-## B. O que é real
+## C · O que é real *(abra o slide de backup)*
 
-**6. O que é real e o que é simulado nessa demo?** *(abra o slide 10)*
-> Real: a pesquisa de mercado, o contexto da empresa, a entrevista, o diagnóstico, o roteiro
-> e o criativo. Simulado: a publicação, a campanha e a performance. E somos explícitos —
-> o próprio contrato de tipos marca `simulado: true`, não dá para esconder nem sem querer.
+**10. O que é real e o que é simulado nessa demo?**
+> Real: contexto, entrevista, análise de mercado, roteiro e criativo. Simulado:
+> publicação, campanha e performance. E somos explícitos — o próprio contrato de tipos
+> marca `simulado: true`, não dá para esconder nem sem querer.
 
-**7. Então a performance é inventada?**
-> Não inventada: simulada, e declarada. ROAS de oito semanas não cabe em cinco horas de
-> hackathon. O que construímos foi o ambiente de avaliação — o mesmo harness que usaríamos
-> para rodar evals do agente em produção. A diferença entre esconder e escolher é o que
-> estamos mostrando aqui.
+**11. Então a performance é inventada?**
+> Simulada, e declarada. ROAS de oito semanas não cabe em cinco horas. O que construímos
+> foi o ambiente de avaliação — o mesmo harness que usaríamos para rodar evals do agente
+> em produção.
 
-**8. O loop de aprendizado já funciona ou é roadmap?**
+**12. E se a API cair no meio da demo?**
+> Não cai a demo. Todas as sete caixas têm rede de segurança: se a busca ao vivo falhar,
+> ela cai na análise gravada e avisa na tela. A gente preferiu que a apresentação
+> continuasse e ficasse óbvio que continuou pelo caminho alternativo.
+
+**13. O loop de aprendizado já funciona ou é roadmap?**
 > Hoje é roadmap, e vou ser direto sobre isso. A esteira até o anúncio roda; a escrita de
-> volta no histórico da marca é a próxima entrega. É onde está o valor de longo prazo,
-> e é por isso que é a primeira coisa depois do hackathon.
+> volta no histórico da marca é a próxima entrega. É onde mora o valor de longo prazo, e
+> é a primeira coisa depois do hackathon.
 
-**9. Vocês usaram os patrocinadores?**
-> Gorilla, sim, de verdade — duas execuções, 119 créditos, 89 centavos de dólar, e os dois
-> `search_id` estão no slide. ElevenLabs entra na camada de voz e áudio do criativo.
+**14. Vocês usaram os patrocinadores?**
+> Gorilla, sim, de verdade — duas execuções, oitenta e nove centavos de dólar, e o
+> `search_id` é verificável. ElevenLabs entra na camada de voz e áudio do criativo.
 > Featherless está no roadmap para o passo barato de alto volume.
 
 ---
 
-## C. Mercado e negócio
+## D · Números e dinheiro
 
-**10. Quem paga por isso?**
-> Rede e franquia de varejo local — food-service como porta de entrada. Não o restaurante
-> solo: ele não tem verba e o custo de vendê-lo mata a operação. O franqueador tem orçamento,
-> tem decisão e tem a dor de que marketing local por unidade não escala.
+**15. Oitenta e nove centavos? Como assim?**
+> Duas pesquisas de mercado completas, mil e quinhentas conversas em cinco plataformas,
+> em menos tempo do que durou este pitch. É o custo medido de rodar, não uma estimativa
+> de plano.
 
-**11. Qual o tamanho disso?**
-> Só o iFood tem 500 mil estabelecimentos parceiros em 1.500 cidades. Esse é o piso do
-> mercado endereçável, não o teto — a mesma dor existe em farmácia, academia, clínica e pet.
+**16. Qual a margem por cliente?**
+> O custo de execução é medido: centavos por análise. O preço ainda é decisão nossa, não
+> validada com cliente — então prefiro não inventar uma margem. O que dá para afirmar é a
+> forma: custo marginal por unidade é chamada de API, e não cresce com o tamanho da rede.
 
-**12. Como o cliente resolve isso hoje, sem vocês?**
-> De duas formas. Ou contrata quatro fornecedores — pesquisa, redator, produtora, gestor de
-> tráfego. Ou compra uma planilha no YouTube. E isso não é ironia: os resultados mais
-> relevantes da nossa busca são todos criadores vendendo planilha de precificação.
+**17. CAC e LTV?**
+> Não temos dado próprio, e não vou fingir que temos. A estrutura é o que dá para dizer:
+> um contrato de rede com N unidades dilui a aquisição por N. O número real só existe
+> depois do primeiro piloto.
 
-**13. Quanto vocês cobram?**
+**18. Quanto vocês cobram?**
 > Assinatura por unidade por mês, contratada pela rede. O ponto do modelo é que a venda é
-> uma só e o uso é por unidade — é o que resolve o custo de aquisição que quebra todo mundo
-> que tenta vender software para PME.
-> ⚠️ **Definir o número antes do pitch.** Um valor concreto vale mais que a estrutura.
-
-**14. CAC e LTV?**
-> Ainda não temos dado próprio — seria invenção afirmar número. O que dá para dizer é a
-> estrutura: um contrato de rede com N unidades dilui o CAC por N, e o custo marginal de
-> rodar mais uma unidade é a chamada de API, que medimos: centavos por diagnóstico.
-
-**15. Por que agora?**
-> Três coisas mudaram. Modelo que segue rubrica estruturada sem sair do trilho. API que lê
-> conversa social em tempo real por centavos. E geração de vídeo que chegou em qualidade de
-> anúncio. Há dois anos, qualquer uma das três derrubava o produto.
+> uma só e o uso é por unidade — é o que resolve o custo de aquisição que quebra todo
+> mundo que tenta vender software para PME.
+> ⚠️ **Definir o valor antes do pitch.** Um número concreto vale mais que a estrutura.
 
 ---
 
-## D. Defensibilidade e time
+## E · Mercado
 
-**16. O que impede alguém de copiar em três meses?**
+**19. Quem paga por isso?**
+> Rede e franquia de varejo local — food-service como porta de entrada. Não o restaurante
+> solo: ele não tem verba e o custo de vendê-lo mata a operação. O franqueador tem
+> orçamento, tem decisão e tem a dor de que marketing local por unidade não escala.
+
+**20. Qual o tamanho disso?**
+> Só o iFood tem 500 mil estabelecimentos parceiros em 1.500 cidades. É o piso do mercado
+> endereçável, não o teto — a mesma dor existe em farmácia, academia, clínica e pet.
+
+**21. Como o cliente resolve isso hoje, sem vocês?**
+> De duas formas. Ou contrata quatro fornecedores — pesquisa, redator, produtora, gestor
+> de tráfego. Ou compra uma planilha no YouTube. E isso não é ironia: os resultados mais
+> relevantes da nossa busca são criadores vendendo planilha de precificação.
+
+**22. Por que agora?**
+> Três coisas mudaram. Modelo que segue rubrica estruturada sem sair do trilho. API que lê
+> conversa social em tempo real por centavos. E geração de vídeo em qualidade de anúncio.
+> Há dois anos, qualquer uma das três derrubava o produto.
+
+---
+
+## F · Defensibilidade e time
+
+**23. O que impede alguém de copiar em três meses?**
 > O prompt, copiam numa tarde. O que não copiam é o histórico: o que converteu, para qual
 > público, com qual mecanismo, acumulado campanha após campanha. Quanto mais tempo a marca
 > roda com a gente, mais caro fica sair.
 
-**17. E se a Meta ou o Google mudar a API?**
+**24. E se a Meta ou o Google mudar a API?**
 > Já está isolado. Publicação e campanha são adapters atrás de um contrato — trocar
 > plataforma é trocar uma implementação, não reescrever o agente. Fizemos o mesmo com LLM
-> e com vídeo: hoje rodamos com dois provedores em cada camada.
+> e com vídeo: dois provedores em cada camada.
 
-**18. Quem é o time?**
+**25. Qual a diferença para AdCreative, Arcads, Creatify?**
+> Todos começam no briefing e param no criativo. A gente começa no mercado e vai até a
+> venda. E achamos um concorrente direto **dentro do nosso próprio dado**: alguém já vende
+> um agente de IA de precificação pro mesmo público. Isso não assusta, valida.
+
+**26. Quem é o time?**
 > Quatro pessoas. Um no agente e nos contratos, dois em infraestrutura e integração de
 > anúncio, um em pesquisa de mercado e go-to-market. Todos construíram hoje.
 
-**19. Qual o próximo passo se vocês ganharem?**
-> Fechar o loop de performance e colocar três unidades de uma rede rodando de verdade,
-> com verba real. Não precisamos de mais tecnologia para isso — precisamos de um cliente
-> e de trinta dias.
+**27. Qual o próximo passo se vocês ganharem?**
+> Fechar o loop de performance e colocar três unidades de uma rede rodando de verdade, com
+> verba real. Não precisamos de mais tecnologia para isso — precisamos de um cliente e de
+> trinta dias.
 
 ---
 
-## E. As que machucam
+## G · As que machucam
 
-**20. Vocês não têm nenhum cliente. Como sabem que alguém paga?**
+**28. Vocês não têm nenhum cliente. Como sabem que alguém paga?**
 > Não sabemos, e não vou fingir que sabemos. O que temos é evidência de que o problema é
 > caro: existe um mercado inteiro de criadores vendendo planilha para essa dor, e um
 > concorrente já vendendo agente de IA pro mesmo público. Alguém já está pagando por uma
 > versão pior disso.
 
-**21. Por que o iFood usaria isso?**
+**29. Por que o iFood usaria isso?**
 > Não usaria — o iFood é o benchmark, não o cliente. Escolhemos ele porque é o problema de
 > marketing mais difícil do Brasil neste momento, e porque vocês conseguem julgar em dois
-> segundos se o criativo saiu certo. Cliente é quem tem a mesma dor sem ter time de marketing.
+> segundos se o criativo saiu certo.
 
-**22. Isso é um produto ou uma feature de uma plataforma de ads?**
+**30. Isso é um produto ou uma feature de uma plataforma de ads?**
 > Hoje as plataformas otimizam entrega, não criação. Elas não sabem quem é o prospect da
 > marca nem por que ele não compra. A camada de diagnóstico é o que falta — e ela é
 > agnóstica de plataforma por construção.
 
-**23. Em 5 horas dá para confiar em alguma coisa disso?**
-> Confiem no que tem recibo. Os `search_id` são verificáveis agora. O resto está marcado
-> como simulado na própria tela. Preferimos mostrar um corte honesto a uma demo bonita
-> que não sobrevive a uma pergunta.
+**31. Em 5 horas dá para confiar em alguma coisa disso?**
+> Confiem no que tem recibo. O `search_id` é verificável agora. O resto está marcado como
+> simulado na própria tela. Preferimos mostrar um corte honesto a uma demo bonita que não
+> sobrevive a uma pergunta.
+
+**32. Não é arriscado usar uma marca real sem autorização?**
+> É exercício de hackathon, e a gente fala isso. Não usamos assinatura oficial, não citamos
+> concorrente pelo nome, não exibimos percentual de taxa e não prometemos resultado.
+> O criativo é uma proposta, não uma peça aprovada.
 
 ---
 
 ## Ensaio
 
-1. Cronometre. Se passar de 3:00, o corte é o slide 08 — o loop cabe em uma frase no fecho.
-2. Decore três coisas, não o texto todo: a frase do briefing, o número (**US$ 0,89 e menos
-   tempo que o pitch**) e a expressão **estágio 4 de sofisticação**.
-3. Ensaiem a resposta 6 e a 8 em voz alta. São as duas que decidem se a banca confia em vocês.
-4. Quem responde: o dono de cada resposta é quem construiu aquela parte. Ninguém responde
-   por outro — a banca percebe.
+1. **Cronometre.** Se passar de 3:00, o corte é o slide 6 (negócio) — ele cabe em duas
+   frases. Nunca corte o slide 2 nem o 5: são os que vendem.
+2. **Decore quatro coisas, não o texto todo:** a frase de abertura, os seis agentes,
+   **US$ 0,89**, e **estágio 4 de sofisticação**.
+3. **Ensaie em voz alta as respostas 10, 12 e 13.** São as três em que vocês assumem um
+   limite — e é aí que a banca decide se confia. Dita com firmeza, "hoje é roadmap" soa
+   como domínio do escopo; dita hesitando, soa como buraco.
+4. **Deixe o slide de backup a um clique.** Ele existe para a pergunta 10 e não deve
+   aparecer antes disso.
