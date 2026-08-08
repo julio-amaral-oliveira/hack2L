@@ -16,7 +16,9 @@ de IA. O pipeline tem quatro caixas pretas:
    ingere os arquivos e roda uma entrevista adaptativa por chat. A
    entrevista fecha um diagnóstico nos termos da rubrica.
 2. **Criativo** — o sistema gera a copy com a rubrica de Schwartz e gera
-   um vídeo vertical por API.
+   um vídeo vertical por API. Antes do criativo, uma etapa de análise de
+   mercado (Gorilla) mostra como a marca é comentada no mercado sobre o
+   assunto X.
 3. **Publicar** — mock de publicação no YouTube Shorts.
 4. **Campanha** — mock de campanha no Google Ads. A campanha aponta para
    a landing page existente.
@@ -34,6 +36,10 @@ Não reabra estas decisões durante o build.
   (Claude) e `openai` (GPT). Resolução: `LLM_PROVIDER` → Claude se
   houver chave → GPT se houver chave. Uma só chave é suficiente para
   o fluxo inteiro. Sem nenhuma chave, ingest usa fallback local.
+- Análise de mercado: etapa real dentro da caixa Aprender, depois da
+  entrevista. Usa a Gorilla API (`GORILLA_API_KEY`) para pesquisar
+  como a marca é comentada no mercado sobre o assunto X. Resultado
+  alimenta o diagnóstico e o criativo.
 - Vídeo: adapter `VideoProvider` com três implementações: `openai`
   (Sora), `google` (Veo, só se houver chave) e `mock` (MP4 em cache).
 - A seleção do provider de vídeo acontece na interface, em um seletor.
@@ -82,6 +88,7 @@ Dois gates humanos existem: aprovar o diagnóstico e aprovar a copy.
 | --- | --- | --- | --- |
 | `POST /api/ingest` | Aprender | multipart com arquivos | `BrandDigest` |
 | `POST /api/interview` | Aprender | `{ digest, history, partialDiagnosis, forceComplete }` | SSE com `InterviewEvent` |
+| `POST /api/research` | Aprender | `{ digest, diagnosis }` | SSE com `ResearchEvent` |
 | `POST /api/copy` | Criativo | `{ digest, diagnosis }` | `CopyPackage` |
 | `GET /api/video` | Criativo | — | `{ available: VideoProviderId[], default: VideoProviderId }` |
 | `POST /api/video` | Criativo | `{ videoPrompt, provider? }` | `VideoGenResult` |
@@ -278,6 +285,7 @@ DECISIONS.md
 | `GOOGLE_GENERATIVE_AI_API_KEY` | não | — | provider de vídeo Google |
 | `GOOGLE_VIDEO_MODEL` | não | `veo-3` | id do modelo de vídeo Google |
 | `LLM_PROVIDER` | não | — | força `anthropic` ou `openai` |
+| `GORILLA_API_KEY` | não | — | análise de mercado (etapa Gorilla) |
 | `VIDEO_PROVIDER` | não | `openai` | `openai`, `google` ou `mock` |
 | `VIDEO_CACHE_PATH` | não | `/videos/ifood-cache.mp4` | MP4 servido pelo provider mock |
 | `LANDING_PAGE_URL` | não | `https://brandloop-lp.vercel.app` | destino da campanha e do CTA |
@@ -772,12 +780,89 @@ Critérios de aceite:
 Execução: o orquestrador roda esta tarefa com o usuário. O usuário
 executa logins e confirmações de conta.
 
+### T12 — Análise de mercado via Gorilla (pós-entrevista)
+
+- **Tempo:** 30 min.
+- **Depende de:** T8, T11 e contratos atualizados (MarketAnalysis).
+- **Arquivos novos:** `lib/boxes/gorilla.ts`, `lib/boxes/researchQuery.ts`,
+  `app/api/research/route.ts`, `components/pipeline/AnalysisPanel.tsx`.
+- **Arquivos modificados:** `lib/orchestrator.ts` (ação SET_RESEARCH +
+  caller), `app/page.tsx` (ligação do fluxo), `.env.example`
+  (`GORILLA_API_KEY` sem valor).
+
+Objetivo: depois que o usuário aprova o diagnóstico, o pipeline roda
+uma análise de mercado real na Gorilla API. A análise mostra como a
+marca é comentada no mercado sobre o assunto X. O usuário aprova a
+análise e só então o criativo é gerado.
+
+Passos:
+
+1. Em `lib/boxes/researchQuery.ts`, use o adapter de LLM
+   (`generateStructured`) para transformar `{ digest, diagnosis }` em
+   uma query de busca: schema `{ assunto: string, queries: string[] }`
+   com 3 a 5 frases de busca em PT-BR, alinhadas ao prospect e ao
+   desejo dominante (ex.: "taxa do iFood come minha margem
+   restaurante"). Assunto é o tema central das buscas.
+2. Em `lib/boxes/gorilla.ts`, implemente o cliente da Gorilla. Base:
+   `https://usegorilla.app/v1`. Headers: `x-api-key: <GORILLA_API_KEY>`,
+   `Content-Type: application/json`, `Accept: application/json` e um
+   `User-Agent` de navegador (a API bloqueia clientes sem UA real).
+   Fluxo: POST `/v2-search-stream` com `{ query, mode: "ranked",
+   since: "3mo", limit: 80, custom_schema }`; faça poll de GET
+   `/v2-search-stream?id=<search_id>` a cada 3 segundos até
+   `status != "running"` (teto de 240 s); leia o campo `data` do
+   custom_schema. Use `fetch` do Node.
+3. O `custom_schema` é igual ao usado nas evidências do pacote iFood
+   (`demo/ifood/evidence/reproduzir-mercado.py`): prospect,
+   desejo_dominante, estado_de_consciencia (enum PT), sofisticacao
+   (1-5), crencas/objecoes/prova como array de `{ texto,
+   evidencia_url }`, mencoes_concorrente `{ concorrente, motivo,
+   evidencia_url }`, linguagem_do_prospect (string[]),
+   mecanismo_sugerido.
+4. Em `lib/boxes/gorilla.ts`, mapeie a saída para `MarketAnalysis`
+   (contrato em `lib/contracts.ts`): estado_de_consciencia PT →
+   AwarenessLevel; sofisticacao 1-5 → 'baixa'|'media'|'alta'; inclua
+   `creditosGastos` (do campo `credits_charged` da resposta).
+5. Em `app/api/research/route.ts`, receba `{ digest, diagnosis }` e
+   devolva SSE com `ResearchEvent` (defina no próprio arquivo):
+   `{ type: 'status', value }` com progresso em PT-BR ("Preparando a
+   busca...", "Pesquisando no mercado (X/Y fontes)...",
+   "Estruturando análise..."), depois `{ type: 'analysis', value:
+   MarketAnalysis }`, e `{ type: 'error', message }` em falha.
+   `maxDuration = 300`. Sem `GORILLA_API_KEY`, evento error com
+   "GORILLA_API_KEY não configurada: defina a chave para a análise de
+   mercado."
+6. Em `lib/orchestrator.ts`, adicione a ação `SET_RESEARCH` e a função
+   `callResearch` (lê SSE como a entrevista).
+7. Em `components/pipeline/AnalysisPanel.tsx`, mostre: durante a busca,
+   os eventos `status` ao vivo; depois, o assunto, o resumo, crenças e
+   objeções com links de evidência, linguagem do prospect (citações),
+   concorrentes mencionados, mecanismo sugerido e provas. Botão
+   "Aprovar e gerar copy" (prop `onApprove`). Props: `research`,
+   `running`, `statusText`, `onApprove`.
+8. Em `app/page.tsx`, mude o fluxo: aprovar o diagnóstico inicia a
+   pesquisa (etapa aprender fica `em_andamento`); quando a análise
+   chega, mostra o AnalysisPanel com `aguardando_aprovacao`; aprovar a
+   análise fecha a etapa aprender (`concluido`) e dispara a copy.
+   Sem chave, o erro aparece com retry.
+
+Critérios de aceite:
+
+- `pnpm build` verde.
+- Com a chave real, o fluxo aprovar-diagnóstico → pesquisa funciona e
+  devolve `MarketAnalysis` válido (teste real, ~80 s, com eventos
+  status visíveis).
+- Contrato SSE inalterado para as outras rotas.
+
+Execução: o orquestrador roda a verificação real com o usuário, por
+causa do custo da busca Gorilla.
+
 ## 9. Execução do orquestrador
 
 ### 9.1 Ordem e paralelismo
 
 ```text
-T1 → T2 → [ T3 ∥ T4 ∥ T5 ∥ T6 ∥ T7 ] → T8 → [ T9 ∥ T10 ]
+T1 → T2 → [ T3 ∥ T4 ∥ T5 ∥ T6 ∥ T7 ] → T8 → [ T9 ∥ T10 ] → T11 → T12
 ```
 
 ### 9.2 Cronograma
@@ -860,6 +945,8 @@ badges `Simulado`.
 - [ ] Entrevista fecha o diagnóstico em até 8 perguntas.
 - [ ] Botão `Fechar diagnóstico agora` funciona.
 - [ ] Copy segue a rubrica e não inventa provas.
+- [ ] Análise de mercado (Gorilla) roda depois do diagnóstico e
+  aparece com evidências linkadas.
 - [ ] `ifood-cache.mp4` toca no player.
 - [ ] Badges `Simulado` visíveis nos mocks.
 - [ ] CTA e campanha apontam para `https://brandloop-lp.vercel.app`.

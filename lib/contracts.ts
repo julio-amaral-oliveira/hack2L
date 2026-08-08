@@ -98,11 +98,39 @@ export interface CampaignResult {
   simulado: true
 }
 
+export interface MarketEvidence {
+  texto: string
+  evidencia_url: string
+}
+
+export interface MarketConcorrente {
+  concorrente: string
+  motivo: string
+  evidencia_url: string
+}
+
+export interface MarketAnalysis {
+  assunto: string
+  resumo: string
+  prospect: string
+  desejoDominante: string
+  estadoDeConsciencia: AwarenessLevel
+  sofisticacaoMercado: 'baixa' | 'media' | 'alta'
+  crencas: MarketEvidence[]
+  objeicoes: MarketEvidence[]
+  concorrentes: MarketConcorrente[]
+  linguagem: string[]
+  mecanismoSugerido: string
+  prova: MarketEvidence[]
+  creditosGastos: number
+}
+
 export interface PipelineState {
   status: Record<StepId, StepStatus>
   digest: BrandDigest | null
   partialDiagnosis: Partial<Diagnosis>
   diagnosis: Diagnosis | null
+  research: MarketAnalysis | null
   copy: CopyPackage | null
   video: VideoGenResult | null
   publish: PublishResult | null
