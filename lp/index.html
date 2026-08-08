@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18239487230"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'AW-18239487230');
+  </script>
+  <title>BrandLoop — O agente de IA que faz seu marketing de ponta a ponta</title>
+  <meta name="description" content="A BrandLoop estuda sua empresa, escreve o roteiro, produz o criativo com a cara da sua marca, publica nas plataformas de ads e otimiza o tráfego. Teste gratuitamente." />
+  <meta property="og:title" content="BrandLoop — Seu marketing inteiro, em um agente" />
+  <meta property="og:description" content="Pesquisa, roteiro, criativo, publicação e gestão de tráfego. Do zero ao anúncio no ar — sozinho. Teste grátis." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='24' font-size='24'%3E%E2%88%9E%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #08080d;
+      --bg-soft: #0e0e16;
+      --card: #12121c;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #ededf2;
+      --muted: #9b9ba8;
+      --violet: #7c5cff;
+      --mint: #00e5a0;
+      --grad: linear-gradient(90deg, var(--violet), var(--mint));
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter", system-ui, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3 { font-family: "Sora", sans-serif; line-height: 1.15; letter-spacing: -0.02em; }
+    .wrap { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 88px 0; }
+
+    /* ---------- header ---------- */
+    header {
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: blur(14px);
+      background: rgba(8, 8, 13, 0.7);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .logo {
+      font-family: "Sora", sans-serif; font-weight: 800; font-size: 20px;
+      color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px;
+    }
+    .logo .loop {
+      background: var(--grad);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      font-size: 24px;
+    }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a:not(.btn) { color: var(--muted); text-decoration: none; font-size: 14.5px; font-weight: 500; }
+    .nav-links a:not(.btn):hover { color: var(--text); }
+
+    /* ---------- buttons ---------- */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: "Inter", sans-serif; font-weight: 600; font-size: 16px;
+      padding: 14px 28px; border-radius: 999px; text-decoration: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: var(--grad); color: #06060a;
+      box-shadow: 0 8px 32px rgba(124, 92, 255, 0.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0, 229, 160, 0.35); }
+    .btn-ghost {
+      color: var(--text); border: 1px solid var(--border); background: transparent;
+    }
+    .btn-ghost:hover { border-color: rgba(255, 255, 255, 0.25); }
+    .btn-sm { padding: 9px 20px; font-size: 14px; }
+
+    /* ---------- hero ---------- */
+    .hero { padding: 110px 0 90px; text-align: center; position: relative; overflow: hidden; }
+    .hero::before {
+      content: ""; position: absolute; inset: -40% -20% auto;
+      height: 520px; pointer-events: none;
+      background:
+        radial-gradient(600px 320px at 30% 40%, rgba(124, 92, 255, 0.22), transparent 70%),
+        radial-gradient(600px 320px at 70% 30%, rgba(0, 229, 160, 0.14), transparent 70%);
+    }
+    .hero > .wrap { position: relative; }
+    .badge {
+      display: inline-block; font-size: 13px; font-weight: 600; color: var(--mint);
+      border: 1px solid rgba(0, 229, 160, 0.3); background: rgba(0, 229, 160, 0.07);
+      padding: 6px 16px; border-radius: 999px; margin-bottom: 28px; letter-spacing: 0.02em;
+    }
+    .hero h1 { font-size: clamp(38px, 6vw, 64px); font-weight: 800; max-width: 820px; margin: 0 auto 22px; }
+    .hero h1 .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero p.sub { font-size: clamp(16px, 2vw, 19px); color: var(--muted); max-width: 640px; margin: 0 auto 36px; }
+    .hero-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .micro { margin-top: 18px; font-size: 13.5px; color: var(--muted); }
+
+    /* ---------- video ---------- */
+    .video-section { background: var(--bg-soft); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .section-head { text-align: center; max-width: 680px; margin: 0 auto 44px; }
+    .section-head h2 { font-size: clamp(28px, 4vw, 40px); font-weight: 700; margin-bottom: 14px; }
+    .section-head p { color: var(--muted); font-size: 17px; }
+    .video-shell {
+      position: relative; aspect-ratio: 16 / 9; max-width: 860px; margin: 0 auto;
+      border-radius: 20px; overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--card);
+      box-shadow: 0 24px 80px rgba(124, 92, 255, 0.18);
+    }
+    .video-shell iframe, .video-shell video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .video-placeholder {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 16px;
+      background:
+        radial-gradient(480px 260px at 30% 20%, rgba(124, 92, 255, 0.18), transparent 70%),
+        radial-gradient(480px 260px at 75% 80%, rgba(0, 229, 160, 0.12), transparent 70%);
+    }
+    .play-circle {
+      width: 76px; height: 76px; border-radius: 50%;
+      background: var(--grad); display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 8px 40px rgba(124, 92, 255, 0.5);
+    }
+    .play-circle svg { margin-left: 4px; }
+    .video-placeholder span { color: var(--muted); font-size: 14.5px; }
+
+    /* ---------- steps ---------- */
+    .steps-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px; counter-reset: step;
+    }
+    .step {
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 26px 22px;
+    }
+    .step .num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 8px; margin-bottom: 16px;
+      background: rgba(124, 92, 255, 0.15); color: var(--violet);
+      font-family: "Sora", sans-serif; font-weight: 700; font-size: 14px;
+    }
+    .step h3 { font-size: 17px; margin-bottom: 8px; }
+    .step p { font-size: 14px; color: var(--muted); line-height: 1.55; }
+
+    /* ---------- about ---------- */
+    .about { background: var(--bg-soft); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .about-inner { max-width: 720px; margin: 0 auto; text-align: center; }
+    .about-inner h2 { font-size: clamp(28px, 4vw, 38px); margin-bottom: 20px; }
+    .about-inner p { color: var(--muted); font-size: 17px; margin-bottom: 18px; }
+    .about-inner p strong { color: var(--text); font-weight: 600; }
+
+    /* ---------- final cta ---------- */
+    .final-cta { text-align: center; padding: 110px 0; }
+    .final-cta h2 { font-size: clamp(30px, 5vw, 48px); margin-bottom: 16px; }
+    .final-cta h2 .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .final-cta p { color: var(--muted); margin-bottom: 34px; font-size: 17px; }
+
+    footer {
+      border-top: 1px solid var(--border); padding: 32px 0; text-align: center;
+      color: var(--muted); font-size: 13.5px;
+    }
+
+    @media (max-width: 640px) {
+      section { padding: 64px 0; }
+      .nav-links a:not(.btn) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="wrap nav">
+      <a class="logo" href="#"><span class="loop">∞</span>BrandLoop</a>
+      <nav class="nav-links">
+        <a href="#video">O agente em ação</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#sobre">Sobre</a>
+        <!-- TODO: trocar href="#" pelo link real de signup/teste em todos os botões .js-cta -->
+        <a class="btn btn-primary btn-sm js-cta" href="#">Testar grátis</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="badge">Agente de IA · Marketing end-to-end</span>
+      <h1>Seu marketing inteiro,<br /><span class="grad">em um agente.</span></h1>
+      <p class="sub">
+        A BrandLoop estuda sua empresa, escreve o roteiro, produz o criativo com a cara da sua
+        marca, publica nas plataformas de anúncio e otimiza o tráfego. Você aprova. Ela executa.
+      </p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary js-cta" href="#">Testar gratuitamente</a>
+        <a class="btn btn-ghost" href="#video">Ver o agente em ação</a>
+      </div>
+      <p class="micro">Grátis para testar · Sem cartão de crédito · Primeiro criativo em minutos</p>
+    </div>
+  </section>
+
+  <!-- VÍDEO -->
+  <section class="video-section" id="video">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Este vídeo foi feito pelo próprio agente.</h2>
+        <p>
+          Roteiro, criativo e publicação: tudo gerado pela BrandLoop — falando sobre a BrandLoop.
+          É o produto se apresentando.
+        </p>
+      </div>
+
+      <div class="video-shell">
+        <!-- ═══════════════════════════════════════════════════════════════
+             QUANDO O VÍDEO FICAR PRONTO, apague o <div class="video-placeholder">
+             abaixo e cole UMA das opções no lugar:
+
+             YouTube: <iframe src="https://www.youtube.com/embed/VIDEO_ID" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+             Vimeo:   <iframe src="https://player.vimeo.com/video/VIDEO_ID" allowfullscreen></iframe>
+             Arquivo: <video src="/brandloop.mp4" controls playsinline poster="/poster.jpg"></video>
+             ═══════════════════════════════════════════════════════════════ -->
+        <div class="video-placeholder">
+          <div class="play-circle">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="#06060a"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <span>O agente está renderizando este vídeo agora mesmo. Sério.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMO FUNCIONA -->
+  <section id="como-funciona">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Um loop completo, sem trabalho manual</h2>
+        <p>Cinco etapas que hoje exigem uma agência inteira — executadas por um único agente.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step">
+          <span class="num">1</span>
+          <h3>Vasculha</h3>
+          <p>Mergulha na sua empresa: site, redes, concorrentes e referências criativas do seu mercado.</p>
+        </div>
+        <div class="step">
+          <span class="num">2</span>
+          <h3>Escreve</h3>
+          <p>Gera roteiros e copies com a voz da sua marca, prontos para você aprovar.</p>
+        </div>
+        <div class="step">
+          <span class="num">3</span>
+          <h3>Produz</h3>
+          <p>Cria vídeos e criativos com qualidade real, respeitando seu branding à risca.</p>
+        </div>
+        <div class="step">
+          <span class="num">4</span>
+          <h3>Publica</h3>
+          <p>Sobe as campanhas direto nas plataformas de ads, configuradas do jeito certo.</p>
+        </div>
+        <div class="step">
+          <span class="num">5</span>
+          <h3>Otimiza</h3>
+          <p>Gerencia o tráfego, realoca verba e melhora os resultados a cada ciclo.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE -->
+  <section class="about" id="sobre">
+    <div class="wrap about-inner">
+      <h2>Sobre a BrandLoop</h2>
+      <p>
+        A BrandLoop nasceu de uma pergunta simples: <strong>e se uma empresa pudesse ter uma
+        operação de marketing completa — estrategista, redator, diretor de arte e gestor de
+        tráfego — trabalhando em loop, 24/7?</strong>
+      </p>
+      <p>
+        Construímos um agente de IA que fecha esse ciclo de ponta a ponta: entende o seu negócio,
+        cria com qualidade de gente grande e aprende com cada campanha que roda. Menos briefing,
+        menos espera, mais resultado.
+      </p>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="final-cta">
+    <div class="wrap">
+      <h2>Coloque seu marketing <span class="grad">em loop.</span></h2>
+      <p>Do contexto ao anúncio no ar — teste agora, sem pagar nada.</p>
+      <a class="btn btn-primary js-cta" href="#">Testar gratuitamente</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">© 2026 BrandLoop — feita em um hackathon, com a ajuda do próprio agente. Esta página também entrou no loop.</div>
+  </footer>
+
+</body>
+</html>
