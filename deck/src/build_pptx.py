@@ -89,26 +89,28 @@ s.notes_slide.notes_text_frame.text = "0:00–0:25 — Abrir pela tensão. Não 
 # ------------------------------------------------- 2 · o sistema de agentes
 s = slide()
 label(s, "O que a BrandLoop é", M, 0.55, 8)
-text(s, [[("Não é um prompt.", CRU, True)],
-         [("São seis agentes com contrato entre eles.", CRU, True)]],
-     M, 1.0, W - 2 * M, 1.3, size=28, line=1.05)
+text(s, "Uma agência inteira, em seis agentes.",
+     M, 1.0, W - 2 * M, 1.3, size=32, bold=True, line=1.05)
 AG = [
-    ("01", "Contexto", "Lê os arquivos da empresa e extrai fatos sob schema — não pode inventar o que não está no texto.", "/api/ingest"),
-    ("02", "Entrevista", "Decide sozinho a próxima pergunta olhando quais campos do diagnóstico ainda estão vazios.", "/api/interview"),
-    ("03", "Mercado", "Busca conversa real e devolve o diagnóstico preenchido, com a URL de cada evidência.", "/api/research"),
-    ("04", "Roteiro", "Escreve sob a rubrica de Schwartz como restrição tipada — sem prova, ele reformula.", "/api/copy"),
-    ("05", "Criativo", "Gera o vídeo vertical e o áudio com a voz da marca, por provider plugável.", "/api/video"),
-    ("06", "Anúncio e funil", "Publica, lê a performance e decide onde mexer, dentro de um envelope de verba.", "/api/publish"),
+    ("01", "Contexto", "atendimento", "Lê os arquivos da empresa e extrai fatos sob schema — não pode inventar o que não está no texto.", "/api/ingest"),
+    ("02", "Entrevista", "planejamento", "Decide sozinho a próxima pergunta olhando quais campos do diagnóstico ainda estão vazios.", "/api/interview"),
+    ("03", "Mercado", "pesquisa", "Busca conversa real e devolve o diagnóstico preenchido, com a URL de cada evidência.", "/api/research"),
+    ("04", "Roteiro", "redação", "Escreve sob a rubrica de Schwartz como restrição tipada — sem prova, ele reformula.", "/api/copy"),
+    ("05", "Criativo", "produtora", "Gera o vídeo vertical e o áudio com a voz da marca, por provider plugável.", "/api/video"),
+    ("06", "Anúncio e funil", "mídia", "Publica, lê a performance e decide onde mexer, dentro de um envelope de verba.", "/api/publish"),
 ]
-cw, ch, gap = 3.85, 1.85, 0.22
-for i, (n, ttl, desc, rota) in enumerate(AG):
+cw, ch, gap = 3.85, 1.95, 0.22
+for i, (n, ttl, papel, desc, rota) in enumerate(AG):
     x = M + (i % 3) * (cw + gap)
-    y = 2.65 + (i // 3) * (ch + gap)
+    y = 2.7 + (i // 3) * (ch + gap)
     card(s, x, y, cw, ch)
-    text(s, n, x + 0.22, y + 0.18, 1, 0.2, size=9, color=AMARELO, font=MONO, space=1.2)
-    text(s, ttl, x + 0.22, y + 0.42, cw - 0.44, 0.3, size=14, bold=True)
-    text(s, desc, x + 0.22, y + 0.78, cw - 0.44, 0.7, size=9.5, color=DIM, line=1.25)
-    text(s, rota, x + 0.22, y + ch - 0.34, cw - 0.44, 0.2, size=8, color=CINZA, font=MONO)
+    text(s, n, x + 0.22, y + 0.16, 1, 0.2, size=9, color=AMARELO, font=MONO, space=1.2)
+    text(s, ttl, x + 0.22, y + 0.38, cw - 0.44, 0.28, size=14, bold=True)
+    # A funcao humana que a caixa substitui: e o que torna o slide legivel para
+    # quem nao e tecnico, e amarra com os "quatro fornecedores" do slide 7.
+    text(s, papel.upper(), x + 0.22, y + 0.68, cw - 0.44, 0.2, size=7.5, color=CINZA, font=MONO, space=1.6)
+    text(s, desc, x + 0.22, y + 0.95, cw - 0.44, 0.65, size=9, color=DIM, line=1.22)
+    text(s, rota, x + 0.22, y + ch - 0.3, cw - 0.44, 0.2, size=8, color=CINZA, font=MONO)
 text(s, "Nenhuma etapa espera humano para começar a próxima.",
      M, 6.7, W - 2 * M, 0.5, size=13, color=AMARELO, line=1.3)
 s.notes_slide.notes_text_frame.text = "0:25–0:50 — É o slide que responde ao critério do hackathon. Onde a IA trabalha."

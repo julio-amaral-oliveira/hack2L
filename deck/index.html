@@ -55,6 +55,10 @@
   .agents > div { background: var(--bg); padding: clamp(.9rem,1.7vw,1.2rem); display: flex; flex-direction: column; gap: .4rem; border-top: 2px solid var(--amarelo); }
   .agents .n { font-family: var(--mono); font-size: .64rem; letter-spacing: .14em; color: var(--amarelo); }
   .agents .st { font-size: clamp(.92rem,1.35vw,1.05rem); font-weight: 680; line-height: 1.15; letter-spacing: -.025em; }
+  /* A função humana que aquela caixa substitui. É o que torna o slide legível
+     para quem não é técnico — e amarra com os "quatro fornecedores" do slide 7. */
+  .agents .ro { font-family: var(--mono); font-size: .58rem; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--faint); margin-top: -.15rem; }
   .agents .ia { font-size: clamp(.8rem,1.15vw,.9rem); line-height: 1.35; color: var(--dim); }
   .agents .rt { font-family: var(--mono); font-size: .6rem; color: var(--faint); letter-spacing: .04em; margin-top: auto; }
   .agents .gate { border-top-color: var(--cinza); }
@@ -177,14 +181,14 @@
   <section class="s">
     <span class="meta"><span class="t">0:20–0:45</span><span>02 / 08</span></span>
     <p class="eyebrow">O que a BrandLoop é</p>
-    <h2>Não é um prompt.<br />São seis agentes com contrato entre eles.</h2>
+    <h2>Uma agência inteira, em seis agentes.</h2>
     <div class="agents">
-      <div><span class="n">01</span><span class="st">Contexto</span><span class="ia">Lê os arquivos da empresa e extrai fatos sob schema — não pode inventar o que não está no texto.</span><span class="rt">/api/ingest</span></div>
-      <div><span class="n">02</span><span class="st">Entrevista</span><span class="ia">Decide sozinho a próxima pergunta olhando quais campos do diagnóstico ainda estão vazios.</span><span class="rt">/api/interview</span></div>
-      <div><span class="n">03</span><span class="st">Mercado</span><span class="ia">Busca conversa real e devolve o diagnóstico já preenchido, com a URL de cada evidência.</span><span class="rt">/api/research</span></div>
-      <div><span class="n">04</span><span class="st">Roteiro</span><span class="ia">Escreve sob a rubrica de Schwartz como restrição tipada — sem prova no diagnóstico, ele reformula.</span><span class="rt">/api/copy</span></div>
-      <div><span class="n">05</span><span class="st">Criativo</span><span class="ia">Gera o vídeo vertical e o áudio com a voz da marca, por provider plugável.</span><span class="rt">/api/video</span></div>
-      <div class="gate"><span class="n">06</span><span class="st">Anúncio e funil</span><span class="ia">Publica, lê a performance e decide onde mexer. Opera dentro de um envelope de verba e claims.</span><span class="rt">/api/publish · /api/campaign</span></div>
+      <div><span class="n">01</span><span class="st">Contexto</span><span class="ro">atendimento</span><span class="ia">Lê os arquivos da empresa e extrai fatos sob schema — não pode inventar o que não está no texto.</span><span class="rt">/api/ingest</span></div>
+      <div><span class="n">02</span><span class="st">Entrevista</span><span class="ro">planejamento</span><span class="ia">Decide sozinho a próxima pergunta olhando quais campos do diagnóstico ainda estão vazios.</span><span class="rt">/api/interview</span></div>
+      <div><span class="n">03</span><span class="st">Mercado</span><span class="ro">pesquisa</span><span class="ia">Busca conversa real e devolve o diagnóstico já preenchido, com a URL de cada evidência.</span><span class="rt">/api/research</span></div>
+      <div><span class="n">04</span><span class="st">Roteiro</span><span class="ro">redação</span><span class="ia">Escreve sob a rubrica de Schwartz como restrição tipada — sem prova no diagnóstico, ele reformula.</span><span class="rt">/api/copy</span></div>
+      <div><span class="n">05</span><span class="st">Criativo</span><span class="ro">produtora</span><span class="ia">Gera o vídeo vertical e o áudio com a voz da marca, por provider plugável.</span><span class="rt">/api/video</span></div>
+      <div class="gate"><span class="n">06</span><span class="st">Anúncio e funil</span><span class="ro">mídia</span><span class="ia">Publica, lê a performance e decide onde mexer, dentro de um envelope de verba.</span><span class="rt">/api/publish · /api/campaign</span></div>
     </div>
     <p class="lede"><span class="y">Nenhuma etapa espera humano para começar a próxima.</span></p>
   </section>
