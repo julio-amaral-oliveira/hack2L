@@ -26,6 +26,11 @@ import {
 } from '@/lib/boxes/interviewPrompt'
 import { getLLM } from '@/lib/llm'
 import type { StructuredRequest } from '@/lib/llm'
+import {
+  isInterviewMockForced,
+  mockInterviewTokens,
+  mockInterviewTurn,
+} from '@/lib/mocks/interview'
 
 export const runtime = 'nodejs'
 export const maxDuration = 120
@@ -124,14 +129,20 @@ export async function POST(request: Request): Promise<Response> {
         }
         const input = parsed.data as InterviewRequestBody
 
-        // 2. Chave obrigatória (Claude ou GPT via adapter).
+        // 2. LLM (Claude ou GPT via adapter). Sem chave — ou com
+        // INTERVIEW_MOCK=1 — a entrevista cai no roteiro determinístico de
+        // lib/mocks/interview.ts, em vez de morrer com erro. O diagnóstico do
+        // mock vem da busca real da Gorilla em demo/ifood/evidence.
         const provider = getLLM()
-        if (!provider) {
-          send({
-            type: 'error',
-            message:
-              'Nenhuma chave de LLM configurada: defina ANTHROPIC_API_KEY ou OPENAI_API_KEY.',
-          })
+        if (!provider || isInterviewMockForced()) {
+          const perguntasFeitas = input.history.filter(
+            (m) => m.role === 'assistant'
+          ).length
+          const turn = mockInterviewTurn(perguntasFeitas, input.forceComplete)
+          for await (const token of mockInterviewTokens(turn.message)) {
+            send({ type: 'token', value: token })
+          }
+          send({ type: 'turn', value: turn })
           controller.close()
           return
         }
