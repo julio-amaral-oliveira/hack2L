@@ -113,12 +113,6 @@
   .powered .k { font-family: var(--mono); font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; color: var(--faint); }
   .powered .v { font-size: clamp(.92rem,1.4vw,1.08rem); line-height: 1.35; color: var(--dim); }
 
-  .chips { display: flex; flex-direction: column; border: 1px solid var(--line); }
-  .chips > div { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem 1rem; padding: clamp(.65rem,1.4vh,.9rem) clamp(1rem,2vw,1.4rem); border-bottom: 1px solid var(--line); }
-  .chips > div:last-child { border-bottom: 0; }
-  .chip { font-family: var(--mono); font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; padding: .26rem .55rem; border: 1px solid currentColor; flex: none; }
-  .real { color: var(--menta); } .sim { color: var(--faint); }
-  .chips .what { font-size: clamp(.86rem,1.35vw,1rem); line-height: 1.4; }
   code { font-family: var(--mono); font-size: .9em; }
 
   .s.gold { background: var(--amarelo); color: var(--preto); }
@@ -127,9 +121,6 @@
   .s.gold .lede { color: rgba(10,10,10,.72); }
   .s.gold .mark .o { background: var(--preto); }
   .s.gold .mark .o::after { background: var(--amarelo); }
-
-  .backup { border: 1px dashed var(--line); padding: .35rem .7rem; font-family: var(--mono);
-    font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); align-self: flex-start; }
 
   .ctl { position: fixed; bottom: 1rem; right: 1rem; z-index: 10; display: flex; gap: .4rem; font-family: var(--mono); font-size: .66rem; }
   .ctl button { font: inherit; letter-spacing: .12em; text-transform: uppercase; background: var(--panel);
@@ -278,20 +269,9 @@
     <p class="lede">Não somos a agência do iFood — ele é o caso mais difícil do Brasil agora, e vocês conseguem verificar tudo o que o agente concluiu.</p>
   </section>
 
-  <!-- backup -->
-  <section class="s">
-    <span class="meta"><span class="t">backup</span><span>—</span></span>
-    <span class="backup">não apresentar · abrir se perguntarem</span>
-    <p class="eyebrow">O que é real e o que é simulado</p>
-    <div class="chips">
-      <div><span class="chip real">real</span><span class="what">Contexto e entrevista — <code>/api/ingest</code>, <code>/api/interview</code>, adapter Anthropic + OpenAI</span></div>
-      <div><span class="chip real">real</span><span class="what">Análise de mercado — <code>/api/research</code>, Gorilla API, 1.516 conversas, <code>search_id</code> verificável</span></div>
-      <div><span class="chip real">real</span><span class="what">Roteiro e criativo — <code>/api/copy</code>, <code>/api/video</code>, providers plugáveis</span></div>
-      <div><span class="chip sim">simulado</span><span class="what">Publicação e campanha — <code>simulado: true</code> forçado pelo contrato de tipos</span></div>
-      <div><span class="chip sim">simulado</span><span class="what">Performance — ROAS de 8 semanas não cabe em 5 horas</span></div>
-    </div>
-    <p class="lede">A performance roda em ambiente de simulação — o mesmo harness que usaríamos para evals em produção. <span class="y">A diferença entre esconder e escolher é o que estamos mostrando aqui.</span></p>
-  </section>
+  <!-- O slide de backup "real vs simulado" foi removido do deck.
+       O corte continua documentado em deck/perguntas-respostas.md (pergunta 10)
+       e é respondido falado, sem slide. -->
 
 </div>
 

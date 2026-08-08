@@ -78,7 +78,10 @@
 
 ---
 
-## C · O que é real *(abra o slide de backup)*
+## C · O que é real
+
+> Não há slide para isso — é respondido falado. O corte está aqui embaixo;
+> quem responder precisa saber de cor qual caixa é real e qual é simulada.
 
 **10. O que é real e o que é simulado nessa demo?**
 > Real: contexto, entrevista, análise de mercado, roteiro e criativo. Simulado:

@@ -224,25 +224,7 @@ text(s, "Não somos a agência do iFood — ele é o caso mais difícil do Brasi
      M, 5.1, 9.2, 1.0, size=14, color=C(0x2C, 0x2C, 0x22), line=1.35)
 s.notes_slide.notes_text_frame.text = "2:45–3:00 — Fecho. Benchmark, não cliente."
 
-# ------------------------------------------------------------ 8 · backup
-s = slide()
-label(s, "Backup — não apresentar · abrir se perguntarem", M, 0.6, 9)
-text(s, "O que é real e o que é simulado", M, 1.05, 10.5, 0.8, size=30, bold=True)
-LINHAS = [("REAL", MENTA, "Contexto e entrevista — /api/ingest e /api/interview, adapter Anthropic + OpenAI"),
-          ("REAL", MENTA, "Análise de mercado — /api/research, Gorilla API, 1.516 conversas, search_id verificável"),
-          ("REAL", MENTA, "Roteiro e criativo — /api/copy e /api/video, providers plugáveis"),
-          ("SIMULADO", CINZA, "Publicação e campanha — simulado: true forçado pelo contrato de tipos"),
-          ("SIMULADO", CINZA, "Performance — ROAS de 8 semanas não cabe em 5 horas")]
-y = 2.3
-for tag, cor, txt in LINHAS:
-    text(s, tag, M, y, 1.5, 0.3, size=9, color=cor, font=MONO, bold=True, space=1.2)
-    text(s, txt, M + 1.7, y - 0.05, W - 2 * M - 1.7, 0.6, size=12.5, line=1.3)
-    y += 0.75
-text(s, [[("A performance roda em ambiente de simulação — o mesmo harness que usaríamos para evals em "
-           "produção. ", DIM, False),
-          ("A diferença entre esconder e escolher é o que estamos mostrando aqui.", AMARELO, False)]],
-     M, 6.25, W - 2 * M, 0.8, size=13, color=DIM, line=1.35)
-s.notes_slide.notes_text_frame.text = "Slide de backup. Só abrir se perguntarem o que é real."
+# O slide de backup "real vs simulado" foi removido do deck.
 
 prs.save(OUT)
 print("gerado:", OUT, "| slides:", len(prs.slides.__iter__.__self__._sldIdLst))
