@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 import { getProvider, listAvailableProviders } from '@/lib/video'
+import { mockProvider } from '@/lib/video/mock'
 import { errorMessage, VideoProviderError } from '@/lib/video/types'
 import type {
   VideoGenInput,
@@ -77,6 +78,19 @@ export async function POST(request: NextRequest) {
     const result = await provider.generate(input)
     return NextResponse.json(result)
   } catch (error) {
+    // Provider real falhou (quota, modelo descontinuado, rede do evento).
+    // Em vez de devolver 500 e travar a demo no palco, cai no MP4 em cache —
+    // o mesmo padrão das outras caixas. Só devolve erro se o mock também
+    // falhar, ou se o mock ERA o provider pedido.
+    console.error(`Provider de vídeo "${provider.id}" falhou:`, error)
+    if (provider.id !== 'mock') {
+      try {
+        const fallback = await mockProvider.generate(input)
+        return NextResponse.json(fallback)
+      } catch (mockError) {
+        console.error('Fallback de vídeo também falhou:', mockError)
+      }
+    }
     if (error instanceof VideoProviderError) {
       return NextResponse.json({ message: error.message }, { status: 500 })
     }

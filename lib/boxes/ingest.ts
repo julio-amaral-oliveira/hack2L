@@ -4,7 +4,6 @@
 // local (resumo + headings). Nunca inventa fatos.
 
 import { getLLM } from '@/lib/llm'
-import { isQuotaError } from '@/lib/llm/types'
 import { isMockLLMForced } from '@/lib/mocks/copy'
 
 import type { BrandDigest } from '@/lib/contracts'
@@ -132,10 +131,9 @@ export async function ingestFiles(files: IngestFile[]): Promise<BrandDigest> {
 
     const { resumo, fatos } = parseDigestInput(output)
     if (!resumo.trim()) {
-      throw new IngestError(
-        'A IA não devolveu um resumo válido. Tente novamente.',
-        500
-      )
+      // Resposta vazia da IA não deve travar a primeira caixa do pipeline.
+      const local = localFallback(textoCompleto)
+      return { resumo: local.resumo, fatos: local.fatos, arquivos }
     }
 
     return {
@@ -144,16 +142,16 @@ export async function ingestFiles(files: IngestFile[]): Promise<BrandDigest> {
       arquivos,
     }
   } catch (error) {
+    // Erros de validação de entrada (formato, tamanho) continuam sendo erro:
+    // são culpa do arquivo enviado e o usuário precisa saber.
     if (error instanceof IngestError) throw error
-    // Conta do provider sem crédito: o fallback local assume no lugar do
-    // erro (modo automático, sem MOCK_LLM).
-    if (isQuotaError(error)) {
-      const { resumo, fatos } = localFallback(textoCompleto)
-      return { resumo, fatos, arquivos }
-    }
-    throw new IngestError(
-      'Falha ao condensar o material com a IA. Verifique a chave de LLM configurada e tente novamente.',
-      500
-    )
+
+    // Qualquer falha do LLM — cota, rede, timeout, resposta malformada — cai
+    // no fallback local em vez de derrubar a demo. Esta é a PRIMEIRA caixa do
+    // pipeline: se ela falha, nada depois acontece, e um tropeço de wi-fi no
+    // evento não pode custar a apresentação inteira.
+    console.error('LLM falhou na ingestão; usando o fallback local:', error)
+    const { resumo, fatos } = localFallback(textoCompleto)
+    return { resumo, fatos, arquivos }
   }
 }

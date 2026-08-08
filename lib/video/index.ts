@@ -45,8 +45,13 @@ function resolveDefault(): VideoProvider {
   if (isProviderId(fromEnv) && isAvailable(fromEnv)) {
     return resolveExplicit(fromEnv)
   }
-  if (process.env.OPENAI_API_KEY) {
-    return createOpenAIProvider(process.env.OPENAI_API_KEY)
+  // NÃO cair no openai por padrão: ele aponta para o Sora 2, descontinuado em
+  // 26/04/2026, com a API desligando em 24/09/2026. Ter OPENAI_API_KEY no
+  // ambiente (para o LLM) fazia o vídeo escolher sozinho um provider morto e
+  // quebrar a demo. Para usar Sora agora é preciso pedir explicitamente,
+  // via VIDEO_PROVIDER=openai ou pelo seletor da interface.
+  if (process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+    return createGoogleProvider(process.env.GOOGLE_GENERATIVE_AI_API_KEY)
   }
   return mockProvider
 }

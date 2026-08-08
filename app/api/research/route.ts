@@ -4,7 +4,10 @@
 // evento SSE por linha no formato `data: {...}\n\n`:
 //   1. eventos `status` com progresso em PT-BR;
 //   2. um evento `analysis` com o MarketAnalysis completo;
-//   3. evento `error` em qualquer falha (incl. GORILLA_API_KEY ausente).
+//   3. evento `error` só em falha irrecuperável (corpo inválido).
+// Sem GORILLA_API_KEY, com MOCK_RESEARCH=1, ou se a busca ao vivo falhar, a
+// rota cai na análise gravada de demo/ifood/evidence e segue — a demo nunca
+// morre nesta caixa. Ver lib/mocks/research.ts.
 // O tipo ResearchEvent é definido aqui (não está em lib/contracts.ts).
 
 import { z } from 'zod'
@@ -16,6 +19,7 @@ import {
   runGorillaSearch,
 } from '@/lib/boxes/gorilla'
 import { buildResearchQuery } from '@/lib/boxes/researchQuery'
+import { isResearchMockForced, mockResearch } from '@/lib/mocks/research'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300
@@ -91,43 +95,58 @@ export async function POST(request: Request): Promise<Response> {
           diagnosis: Diagnosis
         }
 
-        // 2. Chave da Gorilla obrigatória para a busca real.
+        // 2. Query de busca via adapter de LLM.
+        send({ type: 'status', value: 'Preparando a busca...' })
+        const { assunto, queries } = await buildResearchQuery(input)
+
+        // 3. Busca real na Gorilla — com rede de segurança.
+        // Esta é a caixa mais frágil do pipeline: API externa, créditos
+        // finitos, rate limit e timeout de 240s. Sem chave, sem crédito, ou
+        // com a rede do evento ruim, a demo morria aqui no meio. Agora cai no
+        // fixture de demo/ifood/evidence — execução real, search_id
+        // verificável — e a apresentação segue.
         const apiKey = gorillaApiKey()
-        if (!apiKey) {
+
+        if (!apiKey || isResearchMockForced()) {
           send({
-            type: 'error',
-            message:
-              'GORILLA_API_KEY não configurada: defina a chave para a análise de mercado.',
+            type: 'status',
+            value: !apiKey
+              ? 'Sem chave da Gorilla — usando a análise gravada...'
+              : 'Modo demo: usando a análise gravada...',
           })
+          send({ type: 'analysis', value: await mockResearch(assunto) })
           controller.close()
           return
         }
 
-        // 3. Query de busca via adapter de LLM.
-        send({ type: 'status', value: 'Preparando a busca...' })
-        const { assunto, queries } = await buildResearchQuery(input)
-
-        // 4. Busca real na Gorilla com progresso ao vivo.
-        send({ type: 'status', value: 'Pesquisando no mercado...' })
-        const result = await runGorillaSearch({
-          apiKey,
-          query: queries.join('; '),
-          onProgress: (done, total) => {
-            if (total > 0) {
-              send({
-                type: 'status',
-                value: `Pesquisando no mercado (${done}/${total} fontes)...`,
-              })
-            }
-          },
-        })
-
-        // 5. Estrutura e entrega a análise.
-        send({ type: 'status', value: 'Estruturando análise...' })
-        const analysis = mapMarketDataToAnalysis({
-          ...result.data,
-          assunto,
-        }, result.creditsCharged)
+        let analysis
+        try {
+          send({ type: 'status', value: 'Pesquisando no mercado...' })
+          const result = await runGorillaSearch({
+            apiKey,
+            query: queries.join('; '),
+            onProgress: (done, total) => {
+              if (total > 0) {
+                send({
+                  type: 'status',
+                  value: `Pesquisando no mercado (${done}/${total} fontes)...`,
+                })
+              }
+            },
+          })
+          send({ type: 'status', value: 'Estruturando análise...' })
+          analysis = mapMarketDataToAnalysis(
+            { ...result.data, assunto },
+            result.creditsCharged
+          )
+        } catch (erroBusca) {
+          console.error('Gorilla falhou; caindo na análise gravada:', erroBusca)
+          send({
+            type: 'status',
+            value: 'A busca ao vivo falhou — usando a análise gravada...',
+          })
+          analysis = await mockResearch(assunto)
+        }
 
         send({ type: 'analysis', value: analysis })
         controller.close()
