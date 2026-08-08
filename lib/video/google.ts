@@ -45,7 +45,7 @@ export function createGoogleProvider(apiKey: string): VideoProvider {
   return {
     id: 'google',
     async generate(input: VideoGenInput): Promise<VideoGenResult> {
-      const model = process.env.GOOGLE_VIDEO_MODEL ?? DEFAULT_MODEL
+      const model = process.env.GOOGLE_VIDEO_MODEL?.trim() || DEFAULT_MODEL
       let operation: GenerateVideosOperation
       try {
         operation = await ai.models.generateVideos({

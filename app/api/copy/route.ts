@@ -1,19 +1,21 @@
 // app/api/copy/route.ts — caixa "Criativo": recebe { digest, diagnosis },
-// gera o CopyPackage via Claude com tool use, valida com zod (com UMA
-// retentativa anexando o erro em JSON inválido) e devolve o pacote.
-// Erros sempre como { message } em PT-BR.
+// gera o CopyPackage via LLM do adapter (lib/llm: Claude ou GPT) com tool
+// use, valida com zod (com UMA retentativa anexando o erro em JSON inválido)
+// e devolve o pacote. Erros sempre como { message } em PT-BR.
 
 import { NextResponse } from 'next/server'
 
-import Anthropic from '@anthropic-ai/sdk'
 import { z } from 'zod'
 
 import {
   COPY_TOOL_NAME,
   buildCopySystemPrompt,
+  copyJsonSchema,
   copyPackageSchema,
-  copyTool,
+  copyToolDescription,
 } from '@/lib/boxes/copyPrompt'
+import { getLLM } from '@/lib/llm'
+import type { LLMProvider } from '@/lib/llm'
 
 export const runtime = 'nodejs'
 export const maxDuration = 120
@@ -52,24 +54,18 @@ class CopyGenerationError extends Error {
   }
 }
 
-function modelId(): string {
-  return process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-5'
-}
-
 /**
- * Chama o Claude com tool use obrigatório no schema do CopyPackage.
+ * Chama o LLM com tool use obrigatório no schema do CopyPackage.
  * Se o tool call vier com JSON inválido, lança CopyGenerationError com o
  * detalhe do validador — quem chama decide se tenta mais uma vez.
  */
 async function runCopyAttempt(
-  client: Anthropic,
+  provider: LLMProvider,
   system: string,
   userContent: string,
   retryHint?: string
 ): Promise<z.infer<typeof copyPackageSchema>> {
-  const messages: Anthropic.MessageParam[] = [
-    { role: 'user', content: userContent },
-  ]
+  const messages = [{ role: 'user' as const, content: userContent }]
   if (retryHint) {
     messages.push({
       role: 'user',
@@ -81,25 +77,16 @@ async function runCopyAttempt(
     })
   }
 
-  const response = await client.messages.create({
-    model: modelId(),
-    max_tokens: 1600,
+  const output = await provider.generateStructured({
     system,
     messages,
-    tools: [copyTool],
-    tool_choice: { type: 'tool', name: COPY_TOOL_NAME },
+    toolName: COPY_TOOL_NAME,
+    toolDescription: copyToolDescription,
+    jsonSchema: copyJsonSchema,
+    maxTokens: 1600,
   })
 
-  const toolUse = response.content.find(
-    (block): block is Anthropic.ToolUseBlock => block.type === 'tool_use'
-  )
-  if (!toolUse) {
-    throw new CopyGenerationError(
-      'A IA não chamou a ferramenta de copy. Tente novamente.'
-    )
-  }
-
-  const parsed = copyPackageSchema.safeParse(toolUse.input)
+  const parsed = copyPackageSchema.safeParse(output)
   if (!parsed.success) {
     const detalhes = parsed.error.issues
       .map((issue) => `${issue.path.join('.')}: ${issue.message}`)
@@ -137,17 +124,17 @@ export async function POST(request: Request) {
     }
     const { digest, diagnosis } = parsed.data
 
-    if (!process.env.ANTHROPIC_API_KEY) {
+    const provider = getLLM()
+    if (!provider) {
       return NextResponse.json(
         {
           message:
-            'ANTHROPIC_API_KEY não configurada: defina a chave para gerar a copy.',
+            'Nenhuma chave de LLM configurada: defina ANTHROPIC_API_KEY ou OPENAI_API_KEY.',
         },
         { status: 500 }
       )
     }
 
-    const client = new Anthropic()
     const system = buildCopySystemPrompt(diagnosis)
     const userContent = [
       'Material de entrada da caixa Criativo. Use o digest como fonte dos fatos da marca e o diagnóstico como fonte das regras (consciência, sofisticação, crenças, objeções, mecanismo e prova):',
@@ -156,12 +143,12 @@ export async function POST(request: Request) {
 
     let copy: z.infer<typeof copyPackageSchema>
     try {
-      copy = await runCopyAttempt(client, system, userContent)
+      copy = await runCopyAttempt(provider, system, userContent)
     } catch (erro) {
       if (!(erro instanceof CopyGenerationError)) throw erro
       // JSON inválido: tenta mais UMA vez com a mensagem de erro anexada.
       try {
-        copy = await runCopyAttempt(client, system, userContent, erro.message)
+        copy = await runCopyAttempt(provider, system, userContent, erro.message)
       } catch (segundoErro) {
         const detalhe =
           segundoErro instanceof CopyGenerationError
