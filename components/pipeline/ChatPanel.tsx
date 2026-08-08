@@ -81,6 +81,11 @@ export function ChatPanel({
   onTurn,
   onError,
 }: ChatPanelProps) {
+  // `history` é só a semente. NÃO espelhe a prop num useEffect: o pai passa
+  // `history={[]}` inline, o que cria um array novo a cada render dele, e o
+  // efeito apagava as mensagens sempre que onTurn disparava um dispatch —
+  // o usuário dava enter e a conversa sumia. O reset é feito remontando o
+  // componente pela prop `key` em page.tsx, que já existe.
   const [messages, setMessages] = useState<ChatMessage[]>(history);
   const [draft, setDraft] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
@@ -88,11 +93,6 @@ export function ChatPanel({
   const [error, setError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const startedDigestRef = useRef<BrandDigest | null>(null);
-
-  // Espelha a prop history quando ela muda de fora (reset ou integração T8).
-  useEffect(() => {
-    setMessages(history);
-  }, [history]);
 
   const runInterview = useCallback(
     async (historyToSend: ChatMessage[], forceComplete: boolean) => {
@@ -168,12 +168,13 @@ export function ChatPanel({
   );
 
   // A entrevista começa sozinha quando o digest chega e ainda não há histórico.
+  // `messages` (estado local) é a fonte da verdade aqui, não a prop `history`.
   useEffect(() => {
-    if (!digest || history.length > 0 || isStreaming) return;
+    if (!digest || messages.length > 0 || isStreaming) return;
     if (startedDigestRef.current === digest) return;
     startedDigestRef.current = digest;
     runInterview([], false);
-  }, [digest, history, isStreaming, runInterview]);
+  }, [digest, messages.length, isStreaming, runInterview]);
 
   // Mantém o fim do chat visível durante o streaming.
   useEffect(() => {

@@ -12,6 +12,7 @@ import { CheckCircle2, Clock, RotateCcw } from "lucide-react";
 import type {
   AwarenessLevel,
   BrandDigest,
+  ChatMessage,
   Diagnosis,
   InterviewTurn,
   StepId,
@@ -40,6 +41,11 @@ import { Separator } from "@/components/ui/separator";
 import { Toaster } from "@/components/ui/sonner";
 
 const LANDING_PAGE_URL = "https://brandloop-lp.vercel.app";
+
+// Referência estável. Um `history={[]}` inline criaria um array novo a cada
+// render e faria o ChatPanel remontar o histórico do zero. O reset da
+// entrevista é feito pela prop `key`, não por essa prop.
+const EMPTY_HISTORY: ChatMessage[] = [];
 
 const DIAGNOSIS_FIELDS: (keyof Diagnosis)[] = [
   "prospect",
@@ -355,7 +361,7 @@ export default function Home() {
           key={chatKey}
           digest={state.digest}
           partialDiagnosis={state.partialDiagnosis}
-          history={[]}
+          history={EMPTY_HISTORY}
           onTurn={handleTurn}
           onError={handleInterviewError}
         />
