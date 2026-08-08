@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BrandLoop — Hack2L</title>
+<meta name="description" content="Deck do BrandLoop para o Demo Day do Hack2L. Construído sobre duas buscas reais na Gorilla API." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='25' font-size='24'%3E%F0%9F%94%81%3C/text%3E%3C/svg%3E" />
+<style>
+  :root {
+    --fg: #FAF6F0; --fg-dim: #B6A99C; --fg-faint: #7A6E64;
+    --bg: #14100E; --bg-2: #1E1815;
+    --amber: #FF7A2F; --moss: #7FA86F;
+    --line: rgba(250, 246, 240, 0.10); --line-2: rgba(250, 246, 240, 0.05);
+
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, "Cascadia Mono", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --fg: #14100E; --fg-dim: #5C5148; --fg-faint: #948779;
+      --bg: #FAF6F0; --bg-2: #F1EAE0;
+      --line: rgba(20, 16, 14, 0.14); --line-2: rgba(20, 16, 14, 0.07);
+      --amber: #D9541A; --moss: #4E7842;
+    }
+  }
+  :root[data-theme="dark"] {
+    --fg: #FAF6F0; --fg-dim: #B6A99C; --fg-faint: #7A6E64;
+    --bg: #14100E; --bg-2: #1E1815;
+    --line: rgba(250,246,240,0.10); --line-2: rgba(250,246,240,0.05);
+    --amber: #FF7A2F; --moss: #7FA86F;
+  }
+  :root[data-theme="light"] {
+    --fg: #14100E; --fg-dim: #5C5148; --fg-faint: #948779;
+    --bg: #FAF6F0; --bg-2: #F1EAE0;
+    --line: rgba(20,16,14,0.14); --line-2: rgba(20,16,14,0.07);
+    --amber: #D9541A; --moss: #4E7842;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--fg); font-family: var(--sans);
+    -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums;
+  }
+
+  .deck { scroll-snap-type: y mandatory; height: 100vh; overflow-y: auto; scroll-behavior: smooth; }
+
+  .s {
+    scroll-snap-align: start; min-height: 100vh;
+    padding: clamp(2.5rem, 6vh, 5rem) clamp(1.5rem, 6vw, 6rem) clamp(4rem, 8vh, 6rem);
+    display: flex; flex-direction: column; justify-content: center;
+    gap: clamp(1.25rem, 3vh, 2.25rem);
+    border-bottom: 1px solid var(--line-2); position: relative;
+  }
+  .s > * { max-width: 68rem; width: 100%; }
+
+  .num {
+    position: absolute; top: clamp(1.5rem,4vh,2.5rem); right: clamp(1.5rem,6vw,6rem);
+    font-family: var(--mono); font-size: .75rem; color: var(--fg-faint); letter-spacing: .08em;
+  }
+  .eyebrow {
+    font-family: var(--mono); font-size: .72rem; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--amber);
+  }
+  h1 { font-size: clamp(2.6rem, 7.5vw, 6rem); line-height: .95; letter-spacing: -.045em; font-weight: 800; margin: 0; text-wrap: balance; }
+  h2 { font-size: clamp(1.9rem, 4.6vw, 3.6rem); line-height: 1.02; letter-spacing: -.035em; font-weight: 750; margin: 0; text-wrap: balance; }
+  .lede { font-size: clamp(1.05rem, 1.7vw, 1.4rem); line-height: 1.5; color: var(--fg-dim); max-width: 44ch; margin: 0; }
+  p { margin: 0; }
+  .am { color: var(--amber); }
+
+  .thesis { font-size: clamp(1.6rem, 4vw, 3.1rem); line-height: 1.18; letter-spacing: -.03em; font-weight: 650; margin: 0; max-width: 24ch; text-wrap: balance; }
+  .thesis em { font-style: normal; color: var(--amber); }
+
+  .gap { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  @media (min-width: 800px) { .gap { grid-template-columns: 1fr 1fr; } }
+  .gap > div { background: var(--bg); padding: clamp(1.5rem,3vw,2.5rem); display: flex; flex-direction: column; gap: .9rem; }
+  .gap .who { font-family: var(--mono); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--fg-faint); }
+  .gap .said { font-size: clamp(1.2rem,2.4vw,1.85rem); line-height: 1.25; letter-spacing: -.02em; font-weight: 600; }
+  .gap .b .said { color: var(--amber); }
+
+  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .metrics div { background: var(--bg); padding: clamp(1.1rem,2.2vw,1.8rem); display: flex; flex-direction: column; gap: .4rem; }
+  .metrics .v { font-size: clamp(1.8rem,4vw,3rem); font-weight: 800; letter-spacing: -.045em; line-height: 1; }
+  .metrics .k { font-family: var(--mono); font-size: .68rem; letter-spacing: .13em; text-transform: uppercase; color: var(--fg-faint); }
+
+  .receipt { font-family: var(--mono); font-size: clamp(.68rem,1.1vw,.78rem); color: var(--fg-faint); line-height: 1.9; overflow-x: auto; border-left: 2px solid var(--amber); padding-left: 1rem; }
+  .receipt b { color: var(--fg-dim); font-weight: 400; }
+
+  .cmp { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  @media (min-width: 800px) { .cmp { grid-template-columns: 1fr 1fr; } }
+  .cmp > div { background: var(--bg); padding: clamp(1.5rem,3vw,2.4rem); display: flex; flex-direction: column; gap: 1rem; }
+  .cmp .tag { font-family: var(--mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--fg-faint); }
+  .cmp .out { font-size: clamp(1.1rem,2.1vw,1.55rem); line-height: 1.3; letter-spacing: -.02em; font-weight: 600; }
+  .cmp .win { border-top: 2px solid var(--amber); }
+  .cmp .win .tag { color: var(--amber); }
+  .cmp .lose .out { color: var(--fg-faint); }
+
+  .loop { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1rem; font-family: var(--mono); font-size: clamp(.75rem,1.3vw,.95rem); letter-spacing: .04em; }
+  .loop span { padding: .5rem .85rem; border: 1px solid var(--line); color: var(--fg-dim); }
+  .loop .hot { border-color: var(--amber); color: var(--amber); }
+  .loop i { font-style: normal; color: var(--fg-faint); }
+
+  .rows { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+  .rows > div { display: grid; grid-template-columns: 1fr; gap: .3rem; padding: clamp(.9rem,1.8vh,1.3rem) 0; border-bottom: 1px solid var(--line); }
+  @media (min-width: 760px) { .rows > div { grid-template-columns: 15rem 1fr; gap: 2rem; align-items: baseline; } }
+  .rows .lbl { font-family: var(--mono); font-size: .72rem; letter-spacing: .13em; text-transform: uppercase; color: var(--fg-faint); }
+  .rows .val { font-size: clamp(1rem,1.6vw,1.2rem); line-height: 1.45; color: var(--fg); }
+  .rows .val b { color: var(--amber); font-weight: 650; }
+
+  .chips { display: flex; flex-direction: column; border: 1px solid var(--line); }
+  .chips > div { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.1rem; padding: clamp(.85rem,1.7vh,1.15rem) clamp(1rem,2vw,1.5rem); border-bottom: 1px solid var(--line); }
+  .chips > div:last-child { border-bottom: 0; }
+  .chip { font-family: var(--mono); font-size: .64rem; letter-spacing: .13em; text-transform: uppercase; padding: .3rem .6rem; border: 1px solid currentColor; flex: none; }
+  .real { color: var(--moss); }
+  .sim  { color: var(--fg-faint); }
+  .chips .what { font-size: clamp(.95rem,1.5vw,1.1rem); line-height: 1.4; }
+  .chips code { font-family: var(--mono); font-size: .9em; }
+
+  .quotes { display: flex; flex-direction: column; gap: clamp(.9rem,2vh,1.4rem); }
+  .quotes blockquote { margin: 0; padding-left: 1.1rem; border-left: 2px solid var(--line); font-size: clamp(1rem,1.9vw,1.35rem); line-height: 1.35; letter-spacing: -.015em; }
+  .quotes cite { display: block; margin-top: .45rem; font-family: var(--mono); font-size: .68rem; letter-spacing: .1em; color: var(--fg-faint); font-style: normal; }
+
+  .end { font-size: clamp(1.15rem,2.2vw,1.6rem); line-height: 1.4; max-width: 34ch; letter-spacing: -.02em; }
+
+  /* controles */
+  .ctl {
+    position: fixed; bottom: 1rem; right: 1rem; z-index: 10;
+    display: flex; gap: .4rem; font-family: var(--mono); font-size: .68rem;
+  }
+  .ctl button {
+    font: inherit; letter-spacing: .1em; text-transform: uppercase;
+    background: var(--bg-2); color: var(--fg-dim);
+    border: 1px solid var(--line); padding: .5rem .7rem; cursor: pointer;
+  }
+  .ctl button:hover { color: var(--amber); border-color: var(--amber); }
+  .ctl button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .s > * { animation: rise .5s cubic-bezier(.2,.7,.3,1) both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+  }
+  @media (prefers-reduced-motion: reduce) { .deck { scroll-behavior: auto; } }
+
+  /* impressão — um slide por página, paleta clara */
+  @page { size: A4 landscape; margin: 12mm; }
+  @media print {
+    :root, :root[data-theme="dark"], :root[data-theme="light"] {
+      --fg: #14100E; --fg-dim: #443C35; --fg-faint: #6E635A;
+      --bg: #fff; --bg-2: #fff;
+      --line: rgba(20,16,14,.28); --line-2: rgba(20,16,14,.12);
+      --amber: #B8430F; --moss: #3D6233;
+    }
+    .ctl { display: none; }
+    .deck { height: auto; overflow: visible; scroll-snap-type: none; }
+    .s {
+      min-height: 0; height: auto; break-after: page; page-break-after: always;
+      border-bottom: 0; padding: 0 0 1.5rem; justify-content: flex-start; gap: 1.1rem;
+    }
+    .s:last-child { break-after: auto; page-break-after: auto; }
+    .s > * { animation: none !important; }
+    h1 { font-size: 3rem; } h2 { font-size: 2rem; }
+    .thesis { font-size: 1.8rem; } .metrics .v { font-size: 2rem; }
+    .gap > div, .cmp > div, .metrics div { background: #fff; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ctl">
+  <button id="theme" type="button" aria-label="Alternar tema">tema</button>
+  <button id="print" type="button" aria-label="Salvar como PDF">pdf</button>
+</div>
+
+<div class="deck" id="deck">
+
+  <section class="s">
+    <span class="num">01 / 10</span>
+    <p class="eyebrow">Hack2L · AI Agents · Canastra Ventures</p>
+    <h1>Brand<span class="am">Loop</span></h1>
+    <p class="lede">O agente que lê o mercado antes de escrever. Diagnóstico, criativo, publicação e tráfego — em um loop que engorda a cada campanha.</p>
+    <p class="receipt">demo <b>iFood → dono de restaurante</b> · benchmark, não cliente</p>
+  </section>
+
+  <section class="s">
+    <span class="num">02 / 10</span>
+    <p class="eyebrow">A tese</p>
+    <p class="thesis">Todo agente de marketing começa no briefing. O briefing é a marca falando sobre si mesma. <em>O mercado não lê briefing.</em></p>
+  </section>
+
+  <section class="s">
+    <span class="num">03 / 10</span>
+    <p class="eyebrow">O problema, em duas frases</p>
+    <div class="gap">
+      <div class="a">
+        <span class="who">O que a marca diz</span>
+        <span class="said">“O iFood gerando venda para o seu negócio.”</span>
+        <span class="who">canal oficial iFood para Parceiros</span>
+      </div>
+      <div class="b">
+        <span class="who">O que o dono diz</span>
+        <span class="said">“iFood é parceiro… ou prisão?”</span>
+        <span class="who">conversa pública, últimos 90 dias</span>
+      </div>
+    </div>
+    <p class="lede">A distância entre essas duas frases é o briefing que ninguém escreve.</p>
+  </section>
+
+  <section class="s">
+    <span class="num">04 / 10</span>
+    <p class="eyebrow">A prova — duas execuções reais</p>
+    <div class="metrics">
+      <div><span class="v">1.516</span><span class="k">conversas lidas</span></div>
+      <div><span class="v">57</span><span class="k">sinais quentes</span></div>
+      <div><span class="v">158,7s</span><span class="k">tempo total</span></div>
+      <div><span class="v">US$ 0,89</span><span class="k">custo total</span></div>
+    </div>
+    <p class="thesis" style="max-width:30ch">Menos tempo do que este pitch. <em>E oitenta e nove centavos.</em></p>
+    <p class="receipt">
+      <b>mercado</b> &nbsp;4554b5ce-a28d-4d49-abfe-af3fec65ab84 &nbsp;· 719 res · 74,9s · 66 cr<br />
+      <b>concorrência</b> &nbsp;908fb448-3f62-49f6-8b49-ed8e983ccc9a &nbsp;· 797 res · 83,8s · 53 cr<br />
+      <b>fontes</b> &nbsp;reddit 453 · bluesky 158 · youtube 71 · linkedin 37
+    </p>
+  </section>
+
+  <section class="s">
+    <span class="num">05 / 10</span>
+    <p class="eyebrow">A descoberta</p>
+    <h2>A concorrência não é uma agência.<br />É uma planilha.</h2>
+    <p class="lede">Os 33 resultados mais relevantes dizem todos a mesma coisa: <span class="am">me ensina a fazer a conta</span>. O agente achou o checkout — a planilha é um produto pago.</p>
+    <div class="quotes">
+      <blockquote>“Gasto mais neurônios usando esses apps do que no trabalho.”<cite>r/saopaulo</cite></blockquote>
+      <blockquote>“Comecei sem saber praticamente nada de como o iFood funciona.”<cite>r/deliverybrasil</cite></blockquote>
+    </div>
+  </section>
+
+  <section class="s">
+    <span class="num">06 / 10</span>
+    <p class="eyebrow">O contraste — mesmo modelo, mesmo briefing</p>
+    <div class="cmp">
+      <div class="lose">
+        <span class="tag">Sem rubrica</span>
+        <span class="out">“Cadastre seu restaurante no iFood e venda mais! 🍔”</span>
+      </div>
+      <div class="win">
+        <span class="tag">Com diagnóstico Schwartz</span>
+        <span class="out">“Toda taxa zero tem prazo de validade. E quem faz a sua conta, de madrugada, é você.”</span>
+      </div>
+    </div>
+    <p class="lede">O agente diagnosticou <span class="am">estágio 4 de sofisticação</span> — e sabe que, nesse estágio, claim não funciona. Só mecanismo.</p>
+  </section>
+
+  <section class="s">
+    <span class="num">07 / 10</span>
+    <p class="eyebrow">O produto é a seta de volta</p>
+    <div class="loop">
+      <span>aprende a marca</span><i>→</i>
+      <span>lê o mercado</span><i>→</i>
+      <span>diagnostica</span><i>→</i>
+      <span>cria</span><i>→</i>
+      <span>publica</span><i>→</i>
+      <span>mede</span><i>→</i>
+      <span class="hot">escreve de volta</span>
+    </div>
+    <h2>Cada campanha não gera só um anúncio.<br />Gera conhecimento sobre a marca.</h2>
+    <p class="lede">O concorrente copia o prompt. Não copia o histórico.</p>
+  </section>
+
+  <section class="s">
+    <span class="num">08 / 10</span>
+    <p class="eyebrow">Negócio</p>
+    <div class="rows">
+      <div><span class="lbl">Quem paga</span><span class="val">Redes e franquias de varejo local. Food-service multi-unidade como beachhead — <b>o contrato é com a rede, não com a loja</b>.</span></div>
+      <div><span class="lbl">Por que a rede</span><span class="val">O franqueador tem verba e decisão. Marketing local por unidade não escala. Vende uma vez, atende N unidades.</span></div>
+      <div><span class="lbl">Tamanho</span><span class="val">Só o iFood tem <b>500 mil estabelecimentos</b> em 1.500 cidades. É o piso da conta, não o teto.</span></div>
+      <div><span class="lbl">Alternativa hoje</span><span class="val">Uma planilha vendida no YouTube. E um concorrente direto que apareceu no nosso próprio dado.</span></div>
+      <div><span class="lbl">Modelo</span><span class="val">Assinatura por unidade/mês.</span></div>
+    </div>
+  </section>
+
+  <section class="s">
+    <span class="num">09 / 10</span>
+    <p class="eyebrow">O que é real e o que é simulado</p>
+    <div class="chips">
+      <div><span class="chip real">real</span><span class="what">Sinal de mercado — Gorilla API, 1.516 conversas, <code>search_id</code> verificável</span></div>
+      <div><span class="chip real">real</span><span class="what">Diagnóstico Schwartz com URL de evidência em cada campo</span></div>
+      <div><span class="chip real">real</span><span class="what">Copy e criativo gerados pelo pipeline</span></div>
+      <div><span class="chip sim">simulado</span><span class="what">Performance de campanha — ROAS de 8 semanas não cabe em 5 horas</span></div>
+      <div><span class="chip sim">simulado</span><span class="what">Publicação e campanha — dry-run auditável</span></div>
+    </div>
+    <p class="lede">A performance é um <span class="am">ambiente de simulação</span> — o mesmo harness que usaríamos para rodar evals em produção. A diferença entre esconder e escolher é o que estamos mostrando aqui.</p>
+  </section>
+
+  <section class="s">
+    <span class="num">10 / 10</span>
+    <p class="eyebrow">Fecho</p>
+    <p class="end">Não somos a agência do iFood. Escolhemos o iFood porque é o problema de marketing mais difícil do Brasil agora — <span class="am">e porque vocês conseguem verificar tudo.</span></p>
+    <h1>Brand<span class="am">Loop</span></h1>
+    <p class="receipt">os dois <b>search_id</b> são reais e podem ser conferidos</p>
+  </section>
+
+</div>
+
+<script>
+  var deck = document.getElementById('deck');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.s'));
+
+  function current() {
+    var top = deck.scrollTop, best = 0, dist = Infinity;
+    slides.forEach(function (el, i) {
+      var d = Math.abs(el.offsetTop - top);
+      if (d < dist) { dist = d; best = i; }
+    });
+    return best;
+  }
+  function go(step) {
+    var next = Math.min(slides.length - 1, Math.max(0, current() + step));
+    slides[next].scrollIntoView({ block: 'start' });
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+      e.preventDefault(); go(1);
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      e.preventDefault(); go(-1);
+    } else if (e.key === 'Home') { e.preventDefault(); slides[0].scrollIntoView({ block: 'start' }); }
+    else if (e.key === 'End') { e.preventDefault(); slides[slides.length - 1].scrollIntoView({ block: 'start' }); }
+  });
+
+  var root = document.documentElement;
+  document.getElementById('theme').addEventListener('click', function () {
+    var dark = root.getAttribute('data-theme')
+      ? root.getAttribute('data-theme') === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.setAttribute('data-theme', dark ? 'light' : 'dark');
+  });
+
+  document.getElementById('print').addEventListener('click', function () { window.print(); });
+</script>
+
+</body>
+</html>
