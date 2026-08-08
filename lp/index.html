@@ -171,6 +171,32 @@
       color: var(--muted); font-size: 13.5px;
     }
 
+    /* ---------- waitlist modal ---------- */
+    dialog.waitlist {
+      margin: auto; width: min(92vw, 440px);
+      background: var(--card); color: var(--text);
+      border: 1px solid var(--border); border-radius: 20px;
+      padding: 44px 36px 36px; text-align: center;
+      box-shadow: 0 24px 80px rgba(124, 92, 255, 0.25);
+    }
+    dialog.waitlist::backdrop { background: rgba(4, 4, 8, 0.72); backdrop-filter: blur(4px); }
+    .waitlist h3 { font-size: 23px; margin-bottom: 10px; }
+    .waitlist p { color: var(--muted); font-size: 15px; margin-bottom: 24px; }
+    .waitlist form { display: flex; flex-direction: column; gap: 12px; }
+    .waitlist input {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 999px;
+      padding: 14px 20px; color: var(--text); font: inherit; font-size: 16px;
+      text-align: center; outline: none;
+    }
+    .waitlist input:focus { border-color: var(--violet); }
+    .waitlist .close {
+      position: absolute; top: 12px; right: 16px;
+      background: none; border: none; color: var(--muted);
+      font-size: 24px; line-height: 1; cursor: pointer;
+    }
+    .waitlist .close:hover { color: var(--text); }
+    .waitlist .form-msg { color: #ff8b8b; font-size: 14px; margin: 14px 0 0; }
+
     @media (max-width: 640px) {
       section { padding: 64px 0; }
       .nav-links a:not(.btn) { display: none; }
@@ -186,7 +212,7 @@
         <a href="#video">O agente em ação</a>
         <a href="#como-funciona">Como funciona</a>
         <a href="#sobre">Sobre</a>
-        <!-- TODO: trocar href="#" pelo link real de signup/teste em todos os botões .js-cta -->
+        <!-- botões .js-cta abrem o modal da lista de espera (script no fim da página) -->
         <a class="btn btn-primary btn-sm js-cta" href="#">Testar grátis</a>
       </nav>
     </div>
@@ -305,6 +331,59 @@
   <footer>
     <div class="wrap">© 2026 BrandLoop — feita em um hackathon, com a ajuda do próprio agente. Esta página também entrou no loop.</div>
   </footer>
+
+  <!-- MODAL LISTA DE ESPERA -->
+  <dialog class="waitlist" id="waitlist-modal">
+    <button class="close" type="button" aria-label="Fechar" onclick="this.closest('dialog').close()">×</button>
+    <div id="waitlist-start">
+      <h3>Entre na lista de espera</h3>
+      <p>Estamos liberando o acesso em turmas. Deixa seu email que a gente te chama pra testar a BrandLoop gratuitamente.</p>
+      <form id="waitlist-form">
+        <input type="email" name="email" placeholder="seu@email.com" required autocomplete="email" inputmode="email" />
+        <button class="btn btn-primary" type="submit">Quero testar grátis</button>
+      </form>
+      <p class="form-msg" id="waitlist-msg" hidden></p>
+    </div>
+    <div id="waitlist-success" hidden>
+      <h3>Você está na lista! 🎉</h3>
+      <p>A gente te chama assim que sua vaga abrir. Fica de olho no email.</p>
+      <button class="btn btn-ghost" type="button" onclick="this.closest('dialog').close()">Fechar</button>
+    </div>
+  </dialog>
+
+  <script>
+    const modal = document.getElementById('waitlist-modal');
+    const form = document.getElementById('waitlist-form');
+    const msg = document.getElementById('waitlist-msg');
+
+    document.querySelectorAll('.js-cta').forEach((a) =>
+      a.addEventListener('click', (e) => { e.preventDefault(); modal.showModal(); })
+    );
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.close(); });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = form.querySelector('button');
+      btn.disabled = true; btn.textContent = 'Enviando…';
+      msg.hidden = true;
+      try {
+        const r = await fetch('/api/waitlist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: form.email.value }),
+        });
+        if (!r.ok) throw new Error('request_failed');
+        document.getElementById('waitlist-start').hidden = true;
+        document.getElementById('waitlist-success').hidden = false;
+        if (typeof gtag === 'function') gtag('event', 'sign_up', { method: 'waitlist' });
+      } catch {
+        msg.textContent = 'Não rolou 😕 Confere o email e tenta de novo.';
+        msg.hidden = false;
+      } finally {
+        btn.disabled = false; btn.textContent = 'Quero testar grátis';
+      }
+    });
+  </script>
 
 </body>
 </html>
