@@ -190,12 +190,36 @@ for i, (n, g, q, a) in enumerate(FUN):
     text(s, a, x + 0.2, 5.5, cwf - 0.4, 0.55, size=10.5, bold=True, color=PRETO if ult else AMARELO, line=1.25)
 s.notes_slide.notes_text_frame.text = "1:40–2:20 — O funil mostra a AÇÃO do agente, não só o nome da etapa."
 
-# --------------------------------------------------------- 6 · negócio
+# ----------------------------------------------------- 6 · o mercado
+s = slide()
+label(s, "O mercado", M, 0.6, 8)
+text(s, [[("Ninguém precisa ser convencido a gastar.", CRU, True)],
+         [("Já gastam R$ 42,7 bilhões.", AMARELO, True)]],
+     M, 1.05, W - 2 * M, 1.6, size=30, line=1.05)
+MKT = [("R$ 42,7 bi", "mídia digital no Brasil, 2025", AMARELO),
+       ("+12,7%", "crescimento no ano", CRU),
+       ("81%", "em redes sociais e busca", CRU),
+       ("204.908", "unidades franqueadas no país", CRU)]
+cwm2 = (W - 2 * M - 3 * 0.2) / 4
+for i, (v, k, cor) in enumerate(MKT):
+    x = M + i * (cwm2 + 0.2)
+    card(s, x, 3.15, cwm2, 1.55)
+    text(s, v, x + 0.22, 3.42, cwm2 - 0.44, 0.7, size=26, bold=True, color=cor)
+    text(s, k.upper(), x + 0.22, 4.15, cwm2 - 0.44, 0.45, size=8, color=CINZA, font=MONO, space=1.2)
+text(s, [[("Aqueles 81% caem exatamente onde o agente opera. ", DIM, False),
+          ("Não precisamos criar mercado — precisamos capturar uma fatia de uma verba que já existe e cresce dois dígitos ao ano.", AMARELO, False)]],
+     M, 5.0, W - 2 * M, 1.0, size=13, line=1.35)
+text(s, "FONTES: IAB BRASIL + IBOPE, DIGITAL ADSPEND 2026 · ABF, MARÇO DE 2026 · "
+        "ABRASEL: R$ 495 BI EM ALIMENTAÇÃO FORA DO LAR",
+     M, 6.35, W - 2 * M, 0.6, size=8, color=CINZA, font=MONO, line=1.5)
+s.notes_slide.notes_text_frame.text = "2:10–2:30 — O argumento nao e o tamanho, e que o dinheiro JA esta sendo gasto."
+
+# --------------------------------------------------------- 7 · negócio
 s = slide()
 label(s, "Quem paga — e por que não copiam", M, 0.6, 8)
 text(s, "O contrato é com a rede, não com a loja.", M, 1.05, 10.5, 0.8, size=30, bold=True)
 ROWS = [("Cliente", "Rede e franquia de varejo local. Vende uma vez, atende N unidades."),
-        ("Tamanho", "Só o iFood tem 500 mil estabelecimentos em 1.500 cidades. É o piso."),
+        ("Porta de entrada", "Food-service: R$ 495 bilhões em alimentação fora do lar, e 500 mil estabelecimentos só no iFood."),
         ("Alternativa hoje", "Quatro fornecedores — pesquisa, redator, produtora, tráfego. Ou uma planilha vendida no YouTube."),
         ("Modelo", "Assinatura por unidade/mês."),
         ("Custo de execução", "Uma análise de mercado completa custou US$ 0,89. Medido, não estimado."),
@@ -211,7 +235,7 @@ for k, v in ROWS:
     y += 0.82
 s.notes_slide.notes_text_frame.text = "2:20–2:45 — Definir o valor da assinatura antes do pitch."
 
-# ------------------------------------------------------------- 7 · fecho
+# ------------------------------------------------------------- 8 · fecho
 s = slide(bg=AMARELO)
 o = s.shapes.add_shape(MSO_SHAPE.OVAL, In(M), In(1.5), In(0.55), In(0.55))
 o.fill.solid(); o.fill.fore_color.rgb = PRETO
