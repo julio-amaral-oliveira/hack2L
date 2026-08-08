@@ -20,7 +20,3 @@ Projeto Vercel `brandloop-lp` (team bonatti-programas), conectado ao fork `natti
 Os botões "Testar gratuitamente" abrem um modal que salva o email via `POST /api/waitlist`.
 
 Pra baixar a lista: `GET https://brandloop-lp.vercel.app/api/waitlist?key=<WAITLIST_KEY>` (adicione `&format=csv` pra planilha). A chave está nas env vars do projeto na Vercel.
-
-## Vídeo
-
-O slot do vídeo está na seção `#video` do `index.html` — instruções de embed no comentário dentro de `.video-shell`.
