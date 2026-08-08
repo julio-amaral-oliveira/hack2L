@@ -146,13 +146,14 @@ except Exception:
 text(s, "ANÁLISE DE MERCADO", M + 1.35, 2.62, 5, 0.25, size=9, color=CINZA, font=MONO, space=1.5)
 text(s, "Reddit · X · Bluesky · LinkedIn · YouTube — conversa real, em tempo real",
      M + 1.35, 2.95, 9.5, 0.5, size=13, color=DIM)
-MET = [("1.516", "conversas reais lidas"), ("5", "plataformas"), ("< 3 min", "menos que este pitch")]
-cw3 = 3.85
-for i, (v, k) in enumerate(MET):
-    x = M + i * (cw3 + 0.22)
+MET = [("1.516", "conversas reais lidas", CRU), ("5", "plataformas", CRU),
+       ("< 3 min", "menos que este pitch", CRU), ("US$ 0,89", "custo total", AMARELO)]
+cw3 = (W - 2 * M - 3 * 0.2) / 4
+for i, (v, k, cor) in enumerate(MET):
+    x = M + i * (cw3 + 0.2)
     card(s, x, 3.95, cw3, 1.5)
-    text(s, v, x + 0.25, 4.2, cw3 - 0.5, 0.7, size=34, bold=True)
-    text(s, k.upper(), x + 0.25, 4.95, cw3 - 0.5, 0.3, size=9, color=CINZA, font=MONO, space=1.2)
+    text(s, v, x + 0.22, 4.2, cw3 - 0.44, 0.7, size=28, bold=True, color=cor)
+    text(s, k.upper(), x + 0.22, 4.95, cw3 - 0.44, 0.35, size=8.5, color=CINZA, font=MONO, space=1.2)
 text(s, [[("E o que ele concluiu: ", CRU, True),
           ("esse mercado não quer mais uma promessa de venda — quer parar de fazer a conta de madrugada.", DIM, False)]],
      M, 5.85, W - 2 * M, 0.6, size=13, line=1.35)
@@ -197,15 +198,17 @@ ROWS = [("Cliente", "Rede e franquia de varejo local. Vende uma vez, atende N un
         ("Tamanho", "Só o iFood tem 500 mil estabelecimentos em 1.500 cidades. É o piso."),
         ("Alternativa hoje", "Quatro fornecedores — pesquisa, redator, produtora, tráfego. Ou uma planilha vendida no YouTube."),
         ("Modelo", "Assinatura por unidade/mês."),
+        ("Custo de execução", "Uma análise de mercado completa custou US$ 0,89. Medido, não estimado."),
         ("Defensibilidade", "Cada campanha devolve o que converteu, para quem e com qual mecanismo. Copia-se o prompt numa tarde; não se copia o histórico.")]
-y = 2.35
+# 6 linhas em 7,5 pol: passo de 0,82 mantem a ultima dentro do slide.
+y = 2.05
 for k, v in ROWS:
-    text(s, k.upper(), M, y, 2.6, 0.35, size=9.5, color=CINZA, font=MONO, space=1.2)
-    text(s, v, M + 2.8, y - 0.04, W - 2 * M - 2.8, 0.8, size=13, line=1.3)
-    ln = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, In(M), In(y + 0.62), In(W - 2 * M), In(0.012))
+    text(s, k.upper(), M, y, 2.6, 0.32, size=9, color=CINZA, font=MONO, space=1.2)
+    text(s, v, M + 2.8, y - 0.04, W - 2 * M - 2.8, 0.72, size=12.5, line=1.28)
+    ln = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, In(M), In(y + 0.58), In(W - 2 * M), In(0.012))
     ln.fill.solid(); ln.fill.fore_color.rgb = C(0x2A, 0x2A, 0x28)
     ln.line.fill.background(); ln.shadow.inherit = False
-    y += 0.92
+    y += 0.82
 s.notes_slide.notes_text_frame.text = "2:20–2:45 — Definir o valor da assinatura antes do pitch."
 
 # ------------------------------------------------------------- 7 · fecho

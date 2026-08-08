@@ -83,6 +83,8 @@
   .metrics div { background: var(--bg); padding: clamp(.95rem,1.9vw,1.5rem); display: flex; flex-direction: column; gap: .3rem; }
   .metrics .v { font-size: clamp(1.5rem,3.5vw,2.7rem); font-weight: 800; letter-spacing: -.05em; line-height: 1; }
   .metrics .k { font-family: var(--mono); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+  /* O custo é o número que mais surpreende: é o único destacado em amarelo. */
+  .metrics .hi .v { color: var(--amarelo); }
 
   .receipt { font-family: var(--mono); font-size: clamp(.62rem,.95vw,.72rem); color: var(--faint); line-height: 1.85;
     overflow-x: auto; border-left: 2px solid var(--amarelo); padding-left: 1rem; }
@@ -225,6 +227,7 @@
       <div><span class="v">1.516</span><span class="k">conversas reais lidas</span></div>
       <div><span class="v">5</span><span class="k">plataformas</span></div>
       <div><span class="v">&lt; 3 min</span><span class="k">menos que este pitch</span></div>
+      <div class="hi"><span class="v">US$ 0,89</span><span class="k">custo total</span></div>
     </div>
     <p class="receipt"><b>e o que ele concluiu:</b> esse mercado não quer mais uma promessa de venda — quer parar de fazer a conta de madrugada.</p>
   </section>
@@ -262,6 +265,7 @@
       <div><span class="lbl">Tamanho</span><span class="val">Só o iFood tem <b>500 mil estabelecimentos</b> em 1.500 cidades. É o piso.</span></div>
       <div><span class="lbl">Alternativa hoje</span><span class="val">Quatro fornecedores — pesquisa, redator, produtora, tráfego. Ou uma planilha vendida no YouTube.</span></div>
       <div><span class="lbl">Modelo</span><span class="val">Assinatura por unidade/mês.</span></div>
+      <div><span class="lbl">Custo de execução</span><span class="val">Uma análise de mercado completa custou <b>US$ 0,89</b>. Medido, não estimado — a margem por unidade não depende de escala para existir.</span></div>
       <div><span class="lbl">Defensibilidade</span><span class="val">Cada campanha devolve o que converteu, para quem e com qual mecanismo. Isso vira memória da marca. <b>Copia-se o prompt numa tarde; não se copia o histórico.</b></span></div>
     </div>
   </section>
