@@ -857,12 +857,61 @@ Critérios de aceite:
 Execução: o orquestrador roda a verificação real com o usuário, por
 causa do custo da busca Gorilla.
 
+### T13 — Mock automático quando a API de LLM não tem crédito
+
+- **Tempo:** 25 min.
+- **Depende de:** T11, T12 e do mock de entrevista já existente
+  (`lib/mocks/interview.ts`, do time).
+- **Arquivos novos:** `lib/mocks/copy.ts`.
+- **Arquivos modificados:** `lib/llm/types.ts` (helper `isQuotaError`),
+  `lib/boxes/ingest.ts`, `lib/boxes/researchQuery.ts`,
+  `app/api/interview/route.ts`, `app/api/copy/route.ts`,
+  `.env.example` (`MOCK_LLM=`).
+
+Objetivo: o app não quebra quando a chave de LLM existe mas a conta
+está sem crédito (erro 429 `credit_balance_exhausted`). Cada caixa
+cai no mock determinístico no lugar de erro. O modo automático é
+detectado no erro; `MOCK_LLM=1` força o mock sem chamada nenhuma.
+
+Passos:
+
+1. Em `lib/llm/types.ts`, exporte `isQuotaError(error: unknown):
+   boolean`. Detecta 429, `insufficient_quota`,
+   `credit_balance_exhausted` e "no credits" no texto do erro.
+2. Em `lib/mocks/copy.ts`, crie `mockCopyPackage(diagnosis)`:
+   deterministico, 3 cenas (gancho, mecanismo, CTA), headline por
+   template a partir de desejoDominante, titulo ≤100 chars, 3-5
+   hashtags, cta com LANDING_PAGE_URL, videoPrompt em ingles com texto
+   na tela PT-BR ≤3 palavras. Exporte `isMockLLMForced()` que lê
+   `MOCK_LLM=1`.
+3. `app/api/copy/route.ts`: sem provider, com `MOCK_LLM=1`, ou em erro
+   de quota → devolve o `mockCopyPackage`.
+4. `app/api/interview/route.ts`: além da condição atual, em erro de
+   quota (catch) → roda o mock determinístico da entrevista no lugar
+   do evento error.
+5. `lib/boxes/ingest.ts`: `MOCK_LLM=1` ou erro de quota → fallback
+   local (resumo + headings) em vez de erro.
+6. `lib/boxes/researchQuery.ts`: sem provider ou `MOCK_LLM=1` →
+   template deterministico (assunto = desejoDominante; 3 queries por
+   template). A busca Gorilla em si continua real.
+7. `.env.example`: adicione `MOCK_LLM=` com comentário.
+
+Critérios de aceite:
+
+- Com a chave OpenAI sem crédito, o fluxo inteiro funciona com mock:
+  ingest (fallback), entrevista (roteiro), copy (mock), pesquisa
+  (Gorilla real), vídeo (mock).
+- Sem `MOCK_LLM`, a queda para mock é automática no 429.
+- `pnpm build` verde.
+
+Execução: o orquestrador roda a verificação com o usuário.
+
 ## 9. Execução do orquestrador
 
 ### 9.1 Ordem e paralelismo
 
 ```text
-T1 → T2 → [ T3 ∥ T4 ∥ T5 ∥ T6 ∥ T7 ] → T8 → [ T9 ∥ T10 ] → T11 → T12
+T1 → T2 → [ T3 ∥ T4 ∥ T5 ∥ T6 ∥ T7 ] → T8 → [ T9 ∥ T10 ] → T11 → T12 → T13
 ```
 
 ### 9.2 Cronograma

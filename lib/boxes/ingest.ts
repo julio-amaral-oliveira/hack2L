@@ -4,6 +4,8 @@
 // local (resumo + headings). Nunca inventa fatos.
 
 import { getLLM } from '@/lib/llm'
+import { isQuotaError } from '@/lib/llm/types'
+import { isMockLLMForced } from '@/lib/mocks/copy'
 
 import type { BrandDigest } from '@/lib/contracts'
 
@@ -109,7 +111,9 @@ export async function ingestFiles(files: IngestFile[]): Promise<BrandDigest> {
   const textoCompleto = joinTexts(files)
 
   const provider = getLLM()
-  if (!provider) {
+  // Sem chave — ou com MOCK_LLM=1 — cai no fallback local (resumo + headings),
+  // sem chamar o LLM.
+  if (!provider || isMockLLMForced()) {
     const { resumo, fatos } = localFallback(textoCompleto)
     return { resumo, fatos, arquivos }
   }
@@ -141,6 +145,12 @@ export async function ingestFiles(files: IngestFile[]): Promise<BrandDigest> {
     }
   } catch (error) {
     if (error instanceof IngestError) throw error
+    // Conta do provider sem crédito: o fallback local assume no lugar do
+    // erro (modo automático, sem MOCK_LLM).
+    if (isQuotaError(error)) {
+      const { resumo, fatos } = localFallback(textoCompleto)
+      return { resumo, fatos, arquivos }
+    }
     throw new IngestError(
       'Falha ao condensar o material com a IA. Verifique a chave de LLM configurada e tente novamente.',
       500

@@ -25,6 +25,27 @@ export interface LLMProvider {
   }
 }
 
+// --- Detecção de erro de quota (conta sem crédito) ---------------------------
+//
+// True quando a conta do provider está sem crédito: status HTTP 429, ou o
+// código/mensagem do erro menciona insufficient_quota, credit_balance_exhausted
+// ou "no credits" (case-insensitive). Cobre os dois formatos que os providers
+// lançam (lib/llm/openai.ts e lib/llm/anthropic.ts): o erro nativo do SDK
+// (com status e code próprios) e o Error convertido em PT-BR, cuja mensagem
+// embute o status "(HTTP 429)" e o texto original do SDK.
+
+export function isQuotaError(error: unknown): boolean {
+  if (error == null || typeof error !== 'object') return false
+  const erro = error as { status?: unknown; code?: unknown; message?: unknown }
+  if (erro.status === 429) return true
+  const termos = ['insufficient_quota', 'credit_balance_exhausted', 'no credits']
+  const texto = [erro.message, erro.code]
+    .filter((valor): valor is string => typeof valor === 'string')
+    .join(' ')
+    .toLowerCase()
+  return termos.some((termo) => texto.includes(termo))
+}
+
 // --- Extração incremental de campos string em JSON parcial -------------------
 
 /**

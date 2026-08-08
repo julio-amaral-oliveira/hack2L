@@ -16,6 +16,11 @@ import {
 } from '@/lib/boxes/copyPrompt'
 import { getLLM } from '@/lib/llm'
 import type { LLMProvider } from '@/lib/llm'
+import { isQuotaError } from '@/lib/llm/types'
+import {
+  isMockLLMForced,
+  mockCopyPackage,
+} from '@/lib/mocks/copy'
 
 export const runtime = 'nodejs'
 export const maxDuration = 120
@@ -125,14 +130,10 @@ export async function POST(request: Request) {
     const { digest, diagnosis } = parsed.data
 
     const provider = getLLM()
-    if (!provider) {
-      return NextResponse.json(
-        {
-          message:
-            'Nenhuma chave de LLM configurada: defina ANTHROPIC_API_KEY ou OPENAI_API_KEY.',
-        },
-        { status: 500 }
-      )
+    // Sem chave — ou com MOCK_LLM=1 — a copy cai no pacote determinístico de
+    // lib/mocks/copy.ts, em vez de morrer com erro.
+    if (!provider || isMockLLMForced()) {
+      return NextResponse.json(mockCopyPackage(diagnosis))
     }
 
     const system = buildCopySystemPrompt(diagnosis)
@@ -145,11 +146,19 @@ export async function POST(request: Request) {
     try {
       copy = await runCopyAttempt(provider, system, userContent)
     } catch (erro) {
+      // Conta do provider sem crédito: o mock determinístico assume no lugar
+      // do erro (modo automático, sem MOCK_LLM).
+      if (isQuotaError(erro)) {
+        return NextResponse.json(mockCopyPackage(diagnosis))
+      }
       if (!(erro instanceof CopyGenerationError)) throw erro
       // JSON inválido: tenta mais UMA vez com a mensagem de erro anexada.
       try {
         copy = await runCopyAttempt(provider, system, userContent, erro.message)
       } catch (segundoErro) {
+        if (isQuotaError(segundoErro)) {
+          return NextResponse.json(mockCopyPackage(diagnosis))
+        }
         const detalhe =
           segundoErro instanceof CopyGenerationError
             ? segundoErro.message

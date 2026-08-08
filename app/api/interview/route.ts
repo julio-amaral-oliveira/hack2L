@@ -26,6 +26,7 @@ import {
 } from '@/lib/boxes/interviewPrompt'
 import { getLLM } from '@/lib/llm'
 import type { StructuredRequest } from '@/lib/llm'
+import { isQuotaError } from '@/lib/llm/types'
 import {
   isInterviewMockForced,
   mockInterviewTokens,
@@ -109,6 +110,10 @@ export async function POST(request: Request): Promise<Response> {
         }
       }
 
+      // null antes do corpo ser validado; o catch de quota abaixo usa-o com
+      // segurança (a chamada de LLM só acontece depois desta atribuição).
+      let input: InterviewRequestBody | null = null
+
       try {
         // 1. Corpo da requisição.
         let body: unknown
@@ -127,7 +132,7 @@ export async function POST(request: Request): Promise<Response> {
           controller.close()
           return
         }
-        const input = parsed.data as InterviewRequestBody
+        input = parsed.data as InterviewRequestBody
 
         // 2. LLM (Claude ou GPT via adapter). Sem chave — ou com
         // INTERVIEW_MOCK=1 — a entrevista cai no roteiro determinístico de
@@ -178,6 +183,21 @@ export async function POST(request: Request): Promise<Response> {
         send({ type: 'turn', value: turnResult.data as InterviewTurn })
         controller.close()
       } catch (erro) {
+        // Conta do provider sem crédito: o roteiro determinístico da
+        // entrevista assume no lugar do erro (modo automático, sem
+        // INTERVIEW_MOCK). O turno é escolhido pelas perguntas já feitas.
+        if (input && isQuotaError(erro)) {
+          const perguntasFeitas = input.history.filter(
+            (m) => m.role === 'assistant'
+          ).length
+          const turn = mockInterviewTurn(perguntasFeitas, input.forceComplete)
+          for await (const token of mockInterviewTokens(turn.message)) {
+            send({ type: 'token', value: token })
+          }
+          send({ type: 'turn', value: turn })
+          controller.close()
+          return
+        }
         console.error('POST /api/interview falhou:', erro)
         const message =
           erro instanceof Error ? erro.message : 'Erro interno na entrevista.'

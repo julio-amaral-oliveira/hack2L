@@ -7,6 +7,7 @@ import { z } from 'zod'
 
 import type { BrandDigest, Diagnosis } from '@/lib/contracts'
 import { getLLM } from '@/lib/llm'
+import { isMockLLMForced } from '@/lib/mocks/copy'
 
 export const RESEARCH_QUERY_TOOL_NAME = 'research_query'
 
@@ -95,19 +96,43 @@ export function buildResearchQuerySystemPrompt(
     .join('\n')
 }
 
+/** Primeira letra minúscula, para encaixar o desejo no meio de uma frase. */
+function lowerCaseFirst(texto: string): string {
+  if (texto.length === 0) return texto
+  return texto.charAt(0).toLowerCase() + texto.slice(1)
+}
+
+/**
+ * Query de busca determinística, sem LLM: o assunto é o desejo dominante do
+ * diagnóstico e as queries são 3 frases de template na linguagem do prospect.
+ * Usada sem chave de LLM ou com MOCK_LLM=1 — a busca Gorilla em si continua
+ * real.
+ */
+export function mockResearchQuery(diagnosis: Diagnosis): ResearchQueryOutput {
+  const desejo = lowerCaseFirst(diagnosis.desejoDominante)
+  const prospect = lowerCaseFirst(diagnosis.prospect)
+  return {
+    assunto: diagnosis.desejoDominante,
+    queries: [
+      `${prospect} ${desejo}`,
+      `como ${desejo} sendo ${prospect}`,
+      `alternativa para ${prospect} ${desejo}`,
+    ],
+  }
+}
+
 /**
  * Gera a query de busca via adapter de LLM. Lança Error com mensagem clara em
- * PT-BR se não houver chave de LLM ou se o modelo devolver JSON inválido.
+ * PT-BR se o modelo devolver JSON inválido. Sem chave — ou com MOCK_LLM=1 —
+ * cai no template determinístico de mockResearchQuery.
  */
 export async function buildResearchQuery(input: {
   digest: BrandDigest
   diagnosis: Diagnosis
 }): Promise<ResearchQueryOutput> {
   const provider = getLLM()
-  if (!provider) {
-    throw new Error(
-      'Nenhuma chave de LLM configurada: defina ANTHROPIC_API_KEY ou OPENAI_API_KEY.'
-    )
+  if (!provider || isMockLLMForced()) {
+    return mockResearchQuery(input.diagnosis)
   }
 
   const result = await provider.generateStructured({

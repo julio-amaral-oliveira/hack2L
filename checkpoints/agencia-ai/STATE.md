@@ -95,6 +95,11 @@ orquestrador coordena cada etapa, tratada como caixa preta.
   Pesquisa como a marca é comentada sobre o assunto X e alimenta o
   diagnóstico/criativo. Fora do escopo: etapa de métricas e otimização
   de campanha (decisão do usuário 2026-08-08).
+- Mock automático por cota (T13): com chave de LLM presente mas conta
+  sem crédito (429 credit_balance_exhausted), ingest/entrevista/copy
+  caem em mock determinístico em vez de erro. `MOCK_LLM=1` força o
+  mock sem chamada. Entrevista mock usa o diagnóstico real da Gorilla
+  (evidence).
 
 ## Invariantes e requisitos
 
