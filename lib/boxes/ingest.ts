@@ -3,7 +3,7 @@
 // GPT via lib/llm), condensa com tool use; sem chave nenhuma, cai no fallback
 // local (resumo + headings). Nunca inventa fatos.
 
-import { getLLM } from '@/lib/llm'
+import { getLLMSafe } from '@/lib/llm'
 import { isQuotaError } from '@/lib/llm/types'
 import { isMockLLMForced } from '@/lib/mocks/copy'
 
@@ -110,7 +110,7 @@ export async function ingestFiles(files: IngestFile[]): Promise<BrandDigest> {
 
   const textoCompleto = joinTexts(files)
 
-  const provider = getLLM()
+  const provider = getLLMSafe()
   // Sem chave — ou com MOCK_LLM=1 — cai no fallback local (resumo + headings),
   // sem chamar o LLM.
   if (!provider || isMockLLMForced()) {

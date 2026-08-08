@@ -6,7 +6,7 @@
 import { z } from 'zod'
 
 import type { BrandDigest, Diagnosis } from '@/lib/contracts'
-import { getLLM } from '@/lib/llm'
+import { getLLMSafe } from '@/lib/llm'
 import { isMockLLMForced } from '@/lib/mocks/copy'
 
 export const RESEARCH_QUERY_TOOL_NAME = 'research_query'
@@ -130,7 +130,7 @@ export async function buildResearchQuery(input: {
   digest: BrandDigest
   diagnosis: Diagnosis
 }): Promise<ResearchQueryOutput> {
-  const provider = getLLM()
+  const provider = getLLMSafe()
   if (!provider || isMockLLMForced()) {
     return mockResearchQuery(input.diagnosis)
   }
