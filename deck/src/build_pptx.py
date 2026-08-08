@@ -82,7 +82,7 @@ def label(s, txt, x, y, w, color=CINZA, size=9):
 s = slide()
 label(s, "Hack2L · AI Agents · Canastra Ventures", M, 0.6, 8)
 text(s, [[("A IA ensinou todo mundo a fazer anúncio.", CRU, True)],
-         [("E todo anúncio a parecer igual.", AMARELO, True)]],
+         [("E agora todo anúncio parece igual.", AMARELO, True)]],
      M, 2.6, W - 2 * M, 2.6, size=48, line=1.0)
 s.notes_slide.notes_text_frame.text = "0:00–0:25 — Abrir pela tensão. Não explicar demais."
 
