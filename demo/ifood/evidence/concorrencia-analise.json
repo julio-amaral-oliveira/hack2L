@@ -1,0 +1,80 @@
+{
+  "frases_literais": [
+    "As taxas zero da 99Food sempre estiveram com os dias contados!",
+    "Neste vídeo, eu falo sobre alguns absurdos que lemos no contrato da 99Food",
+    "A Keeta (Meituan) chegou ao Brasil com R$ 5,6 bilhões no bolso",
+    "cupons de 30%-50% todo dia",
+    "uma marmitex que pagava quase R$50 no ifood hoje consegue pegar 2 por R$30 no 99/Keeta"
+  ],
+  "resumo_da_reacao": "O mercado reagiu com interesse mas também ceticismo: entrantes atraem consumidores com cupons agressivos, mas criam desconfiança entre restaurantes sobre sustentabilidade das taxas. Há relatos de restaurantes testando Keeta/99Food (vídeos sobre 1ª semana/1º mês) enquanto criadores de conteúdo apontam cláusulas contratuais e mudanças nas promessas. Consumidores migraram por cupons de 30%-50%, reduzindo o custo de pedidos em comparação ao iFood.",
+  "ceticismo_do_mercado": [
+    {
+      "texto": "\"As taxas zero da 99Food sempre estiveram com os dias contados!\" — título que expressa descrença na sustentabilidade da promessa.",
+      "evidencia_url": "https://www.youtube.com/watch?v=dKpzrvAkhu4"
+    },
+    {
+      "texto": "\"Neste vídeo, eu falo sobre alguns absurdos que lemos no contrato da 99Food\" — aponta desconfiança sobre termos contratuais.",
+      "evidencia_url": "https://www.youtube.com/watch?v=BkVh_jMxLxs"
+    },
+    {
+      "texto": "Relatos e análises de criadores sobre se vale a pena a Keeta para restaurantes e motoboys, indicando questionamento sobre o modelo.",
+      "evidencia_url": "https://www.youtube.com/watch?v=acmKT_7JT4I"
+    }
+  ],
+  "promessas_dos_entrantes": [
+    {
+      "player": "99Food",
+      "promessa": "Taxas zero (promessa inicial de taxas muito baixas/zero)",
+      "evidencia_url": "https://www.youtube.com/watch?v=dKpzrvAkhu4"
+    },
+    {
+      "player": "Keeta (Meituan)",
+      "promessa": "Taxas baixas e entrada agressiva no Brasil suportada por grande caixa (R$ 5,6 bilhões)",
+      "evidencia_url": "https://www.youtube.com/watch?v=YLGXkeNcDnQ"
+    }
+  ],
+  "vulnerabilidades_do_ifood": [
+    {
+      "texto": "Atrasos por falta de entregador em pedidos recentes — usuário no Bluesky pergunta se o iFood está morrendo por atrasos que não ocorrem em outros apps.",
+      "evidencia_url": "https://bsky.app/profile/oiphribeiro.bsky.social/post/3mi5dcwtb422p"
+    },
+    {
+      "texto": "Preços mais altos no iFood empurraram consumidores para concorrentes com cupons agressivos (comparação de preço/valor feita no Reddit).",
+      "evidencia_url": "https://www.reddit.com/r/saopaulo/comments/1vh7qe3/vocês_ainda_pedem_ifood/"
+    },
+    {
+      "texto": "Dificuldade de vender nos primeiros dias no iFood é tema de vídeos explicativos — sinal de que seller experience e ramp-up importam.",
+      "evidencia_url": "https://www.youtube.com/watch?v=0kK7qN-T5E0"
+    }
+  ],
+  "promessas_que_ja_quebraram": [
+    {
+      "player": "99Food",
+      "o_que_mudou": "Título indica que as 'taxas zero' \"sempre estiveram com os dias contados\" — implicando que a promessa de taxas zero não se sustentou",
+      "evidencia_url": "https://www.youtube.com/watch?v=dKpzrvAkhu4"
+    },
+    {
+      "player": "99Food",
+      "o_que_mudou": "Vídeo aponta 'absurdos' no contrato da 99Food, sugerindo que termos prometidos ou interpretados pelo mercado mudam ou têm exceções contratuais",
+      "evidencia_url": "https://www.youtube.com/watch?v=BkVh_jMxLxs"
+    }
+  ],
+  "angulo_defensivo_recomendado": "Defender via diferenciais comprovados: 1) comunicar e provar confiabilidade de entregas (reduzir atrasos e publicar métricas), 2) proteger restaurantes contra corrida por cupons (oferecer ferramentas de gestão de promoções/precificação e educação, como vídeos/consultorias já populares), e 3) destacar alcance/volume e contratos transparentes frente a cláusulas questionáveis dos entrantes — ações respaldadas por conteúdo que enfatiza contratos, performance e gestão de tráfego.",
+  "quem_migrou_e_o_que_aconteceu": [
+    {
+      "relato": "Usuário no Reddit diz que parou de pedir no iFood por causa dos preços e que 99/Keeta chegaram com cupons diários de 30%-50%, permitindo comprar mais por menos (\"uma marmitex que pagava quase R$50 no ifood hoje consegue pegar 2 por R$30 no 99/Keeta\").",
+      "resultado": "Consumidor migrou e encontrou preços/volume promocional melhores no 99/Keeta.",
+      "evidencia_url": "https://www.reddit.com/r/saopaulo/comments/1vh7qe3/vocês_ainda_pedem_ifood/"
+    },
+    {
+      "relato": "Canais de delivery publicaram vídeos sobre a 1ª semana/1º mês da Keeta no restaurante (testes práticos).",
+      "resultado": "Teste documentado em vídeo (relato de experiência operacional, sem detalhe numérico específico nos títulos).",
+      "evidencia_url": "https://www.youtube.com/watch?v=4UGSfyC1Lnk"
+    },
+    {
+      "relato": "Outro vídeo sobre 1º mês da Keeta no restaurante (abertura de 'caixa de conhecimento').",
+      "resultado": "Relato em formato de experiência inicial, sem afirmar resultados concretos nos títulos.",
+      "evidencia_url": "https://www.youtube.com/watch?v=K_dariaqHGA"
+    }
+  ]
+}

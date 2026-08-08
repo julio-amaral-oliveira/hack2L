@@ -1,0 +1,95 @@
+{
+  "prova": [
+    {
+      "texto": "Vídeos tutoriais e planilhas que ensinam a calcular preço e margem no iFood ('Como calcular a margem de lucro', 'Calculadora Grátis', 'planilha de precificação').",
+      "evidencia_url": "https://www.youtube.com/watch?v=Lu2AgHwJeF8"
+    },
+    {
+      "texto": "Vídeo que afirma que as taxas zero da 99Food parecem temporárias ('As taxas zero da 99Food sempre estiveram com os dias contados!').",
+      "evidencia_url": "https://www.youtube.com/watch?v=dKpzrvAkhu4"
+    },
+    {
+      "texto": "Análise de contrato apontando cláusulas problemáticas na 99Food ('alguns absurdos que lemos no contrato da 99Food').",
+      "evidencia_url": "https://www.youtube.com/watch?v=BkVh_jMxLxs"
+    },
+    {
+      "texto": "Notícia/relato sobre Keeta (Meituan) entrando no Brasil com grande capital e promessa de taxas baixas (contexto competitivo do mercado).",
+      "evidencia_url": "https://www.youtube.com/watch?v=YLGXkeNcDnQ"
+    },
+    {
+      "texto": "Relatos de donos/proprietários e criadores de conteúdo abordando estratégias financeiras para delivery (muitos vídeos com instruções práticas e planilhas).",
+      "evidencia_url": "https://www.youtube.com/watch?v=cCiYDyPQYsI"
+    }
+  ],
+  "crencas": [
+    {
+      "texto": "As taxas do iFood podem 'comer' a margem do restaurante — muitos criadores ensinam como calcular a margem para perceber isso ('Como calcular a margem de lucro das vendas no iFood?', 'Se você sente que as taxas do ...').",
+      "evidencia_url": "https://www.youtube.com/watch?v=Lu2AgHwJeF8"
+    },
+    {
+      "texto": "É possível recalcular preços ou usar planilhas/calculadoras para recuperar margem (vários vídeos oferecem 'Calculadora Grátis' e 'planilha de precificação').",
+      "evidencia_url": "https://www.youtube.com/watch?v=UWpYFmV8Wac"
+    },
+    {
+      "texto": "A 99Food chegou prometendo taxas zero, mas há ceticismo sobre a sustentabilidade dessa promessa ('As taxas zero da 99Food sempre estiveram com os dias contados!').",
+      "evidencia_url": "https://www.youtube.com/watch?v=dKpzrvAkhu4"
+    },
+    {
+      "texto": "Novos players (Keeta/Meituan) entraram com capital grande e promessa de taxas agressivas para desbancar concorrentes ('A Keeta ... chegou ao Brasil com R$ 5,6 bilhões no bolso e uma promessa agressiva de taxas baixas').",
+      "evidencia_url": "https://www.youtube.com/watch?v=YLGXkeNcDnQ"
+    },
+    {
+      "texto": "Contratos/termos de plataformas alternativas podem ter cláusulas problemáticas ('alguns absurdos que lemos no contrato da 99Food').",
+      "evidencia_url": "https://www.youtube.com/watch?v=BkVh_jMxLxs"
+    }
+  ],
+  "objecoes": [
+    {
+      "texto": "Taxas zero/promessas de alternativas podem ser temporárias ou insustentáveis ('taxas zero da 99Food sempre estiveram com os dias contados').",
+      "evidencia_url": "https://www.youtube.com/watch?v=dKpzrvAkhu4"
+    },
+    {
+      "texto": "Contratos de novos apps podem conter cláusulas problemáticas ('alguns absurdos que lemos no contrato da 99Food').",
+      "evidencia_url": "https://www.youtube.com/watch?v=BkVh_jMxLxs"
+    },
+    {
+      "texto": "Mudar/gerenciar vários apps demanda tempo e estratégia ('preciso comparar os valores em dois celulares... Gasto mais neurônios usando esses apps do que no trabalho').",
+      "evidencia_url": "https://www.reddit.com/r/saopaulo/comments/1vh7qe3/vocês_ainda_pedem_ifood/p22y7nl/"
+    },
+    {
+      "texto": "Pequenos restaurantes chegam sem conhecer bem o funcionamento do iFood e podem ter dificuldade para crescer/recuperar margem (relato de confeitaria iniciando e tentando 'fazer tudo certinho' para decolar).",
+      "evidencia_url": "https://www.reddit.com/r/deliverybrasil/comments/1vibis4/como_aumentar_vendas_de_confeitaria_ifood/"
+    }
+  ],
+  "prospect": "Dono(a) de restaurante/pequeno delivery preocupado que as taxas do iFood estão consumindo sua margem",
+  "desejo_dominante": "Reduzir o impacto das comissões dos apps (iFood) na margem ou encontrar alternativa (99Food/Keeta) que compense",
+  "mecanismo_sugerido": "Precificação por canal com planilha/calculadora de custos: ajustar preço do cardápio considerando a comissão específica do app, custo do delivery e margem desejada (usar planilha/ calculadora para simular cenários e decidir manter/saír de cada plataforma)",
+  "mencoes_concorrente": [
+    {
+      "motivo": "Prometeu taxas zero; há vídeos analisando se '99Food vale a pena' e apontando cláusulas/contratos questionáveis.",
+      "concorrente": "99Food",
+      "evidencia_url": "https://www.youtube.com/watch?v=DgxDU-HtX6U"
+    },
+    {
+      "motivo": "Entrou no Brasil com capital grande e promessa de taxas baixas ('chegou ao Brasil com R$ 5,6 bilhões no bolso e uma promessa agressiva de taxas baixas').",
+      "concorrente": "Keeta (Meituan)",
+      "evidencia_url": "https://www.youtube.com/watch?v=YLGXkeNcDnQ"
+    },
+    {
+      "motivo": "Plataforma incumbente cujas comissões são apontadas como altas e que donos precisam considerar/precificar para não perder margem (muitos vídeos sobre 'taxa do iFood' e 'precificar no iFood').",
+      "concorrente": "iFood",
+      "evidencia_url": "https://www.youtube.com/watch?v=UpksCWlcSO4"
+    }
+  ],
+  "estado_de_consciencia": "consciente_da_solucao",
+  "linguagem_do_prospect": [
+    "taxa do iFood come minha margem",
+    "Como calcular a margem de lucro das vendas no iFood?",
+    "taxas zero da 99Food sempre estiveram com os dias contados!",
+    "iFood é parceiro… ou prisão?",
+    "Gasto mais neurônios usando esses apps do que no trabalho"
+  ],
+  "sofisticacao_do_mercado": 4,
+  "sofisticacao_justificativa": "O mercado já conhece o problema de comissões altas e existem soluções/estratégias divulgadas (precificação, planilhas, calcular margem) e novos entrantes prometendo taxas zero/baixas (99Food, Keeta/Meituan com grande capital), mostrando oferta de alternativas e contra-argumentos (ex.: 'taxas zero da 99Food sempre estiveram com os dias contados', 'Keeta ... R$ 5,6 bilhões no bolso'). (evidências: https://www.youtube.com/watch?v=dKpzrvAkhu4 , https://www.youtube.com/watch?v=YLGXkeNcDnQ , https://www.youtube.com/watch?v=UWpYFmV8Wac )",
+  "estado_de_consciencia_justificativa": "Vários vídeos e posts mostram proprietários calculando margem no iFood e buscando planilhas/estratégias (ex.: 'Como calcular a margem de lucro das vendas no iFood?', 'Calculadora Grátis', 'planilha de precificação'), e há discussion sobre alternativas com taxas zero/baixas (99Food, Keeta). (evidências: https://www.youtube.com/watch?v=Lu2AgHwJeF8 , https://www.youtube.com/watch?v=UWpYFmV8Wac , https://www.youtube.com/watch?v=dKpzrvAkhu4 , https://www.youtube.com/watch?v=YLGXkeNcDnQ )"
+}
