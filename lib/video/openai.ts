@@ -49,7 +49,7 @@ export function createOpenAIProvider(apiKey: string): VideoProvider {
   return {
     id: 'openai',
     async generate(input: VideoGenInput): Promise<VideoGenResult> {
-      const model = process.env.OPENAI_VIDEO_MODEL ?? DEFAULT_MODEL
+      const model = process.env.OPENAI_VIDEO_MODEL?.trim() || DEFAULT_MODEL
       let jobId: string
       try {
         const created = await client.videos.create({

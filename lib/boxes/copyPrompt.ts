@@ -1,19 +1,20 @@
 // lib/boxes/copyPrompt.ts — caixa "Criativo": monta o system prompt da copy
-// (rubrica de Schwartz + regras de saída), o schema zod do CopyPackage e a
-// definição da ferramenta de tool use para o Claude.
+// (rubrica de Schwartz + regras de saída), o schema zod do CopyPackage e o
+// schema JSON neutro da ferramenta de tool use (consumido pelo adapter de LLM
+// em lib/llm).
 // O contrato CopyPackage vive em lib/contracts.ts (imutável).
 
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
-import Anthropic from '@anthropic-ai/sdk'
 import { z } from 'zod'
 
 import type { Diagnosis } from '@/lib/contracts'
 
 /** Destino do CTA da copy. Default da landing page da demo. */
 export const LANDING_PAGE_URL =
-  process.env.LANDING_PAGE_URL ?? 'https://brandloop-lp.vercel.app'
+  process.env.LANDING_PAGE_URL?.trim() ||
+  'https://brandloop-lp.vercel.app'
 
 /** Lê a rubrica de lib/copy-rubric.md (cópia exata do arquivo da raiz). */
 export function readCopyRubric(): string {
@@ -41,70 +42,68 @@ export const copyPackageSchema = z.object({
 
 export type CopyPackageOutput = z.infer<typeof copyPackageSchema>
 
-// --- Ferramenta de tool use -------------------------------------------------
+// --- Ferramenta de tool use (schema JSON neutro do adapter de LLM) ----------
 
 export const COPY_TOOL_NAME = 'copy_package'
 
-export const copyTool: Anthropic.Tool = {
-  name: COPY_TOOL_NAME,
-  description:
-    'Gera o CopyPackage completo: headline, roteiro do vídeo em cenas, título, ' +
-    'descrição, hashtags, CTA e o prompt do vídeo vertical. Tudo em PT-BR, ' +
-    'exceto o videoPrompt, que é em inglês. Nunca invente provas: use apenas ' +
-    'os fatos e a prova do diagnóstico.',
-  input_schema: {
-    type: 'object',
-    properties: {
-      headline: {
-        type: 'string',
-        description:
-          'Headline em PT-BR que abre um loop mental no prospect, alinhada ao desejo dominante e ao nível de consciência.',
-      },
-      roteiro: {
-        type: 'array',
-        items: {
-          type: 'object',
-          properties: {
-            ordem: { type: 'integer', description: 'Número da cena, começando em 1.' },
-            fala: {
-              type: 'string',
-              description: 'Fala narrada da cena, em PT-BR, em linguagem do prospect.',
-            },
-            textoNaTela: {
-              type: 'string',
-              description: 'Texto exibido na tela na cena, em PT-BR, com no máximo 3 palavras.',
-            },
-            duracaoSeg: { type: 'integer', description: 'Duração da cena em segundos.' },
-          },
-          required: ['ordem', 'fala', 'textoNaTela', 'duracaoSeg'],
-        },
-        description: 'De 3 a 5 cenas, com duração total entre 15 e 30 segundos.',
-      },
-      titulo: {
-        type: 'string',
-        description: 'Título do vídeo para o Shorts, em PT-BR, com no máximo 100 caracteres.',
-      },
-      descricao: {
-        type: 'string',
-        description: 'Descrição do vídeo em PT-BR: promessa, mecanismo e chamada para o CTA.',
-      },
-      hashtags: {
-        type: 'array',
-        items: { type: 'string' },
-        description: 'De 3 a 5 hashtags em PT-BR, com o caractere # no início.',
-      },
-      cta: {
-        type: 'string',
-        description: 'URL do CTA — sempre a landing page oficial.',
-      },
-      videoPrompt: {
-        type: 'string',
-        description:
-          'Prompt do vídeo em INGLÊS: descreve a CENA 1 do roteiro (ambiente, ação e enquadramento), formato vertical 9:16, e diz que o texto na tela é em PT-BR com no máximo 3 palavras por tela.',
-      },
+export const copyToolDescription =
+  'Gera o CopyPackage completo: headline, roteiro do vídeo em cenas, título, ' +
+  'descrição, hashtags, CTA e o prompt do vídeo vertical. Tudo em PT-BR, ' +
+  'exceto o videoPrompt, que é em inglês. Nunca invente provas: use apenas ' +
+  'os fatos e a prova do diagnóstico.'
+
+export const copyJsonSchema: Record<string, unknown> = {
+  type: 'object',
+  properties: {
+    headline: {
+      type: 'string',
+      description:
+        'Headline em PT-BR que abre um loop mental no prospect, alinhada ao desejo dominante e ao nível de consciência.',
     },
-    required: ['headline', 'roteiro', 'titulo', 'descricao', 'hashtags', 'cta', 'videoPrompt'],
+    roteiro: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          ordem: { type: 'integer', description: 'Número da cena, começando em 1.' },
+          fala: {
+            type: 'string',
+            description: 'Fala narrada da cena, em PT-BR, em linguagem do prospect.',
+          },
+          textoNaTela: {
+            type: 'string',
+            description: 'Texto exibido na tela na cena, em PT-BR, com no máximo 3 palavras.',
+          },
+          duracaoSeg: { type: 'integer', description: 'Duração da cena em segundos.' },
+        },
+        required: ['ordem', 'fala', 'textoNaTela', 'duracaoSeg'],
+      },
+      description: 'De 3 a 5 cenas, com duração total entre 15 e 30 segundos.',
+    },
+    titulo: {
+      type: 'string',
+      description: 'Título do vídeo para o Shorts, em PT-BR, com no máximo 100 caracteres.',
+    },
+    descricao: {
+      type: 'string',
+      description: 'Descrição do vídeo em PT-BR: promessa, mecanismo e chamada para o CTA.',
+    },
+    hashtags: {
+      type: 'array',
+      items: { type: 'string' },
+      description: 'De 3 a 5 hashtags em PT-BR, com o caractere # no início.',
+    },
+    cta: {
+      type: 'string',
+      description: 'URL do CTA — sempre a landing page oficial.',
+    },
+    videoPrompt: {
+      type: 'string',
+      description:
+        'Prompt do vídeo em INGLÊS: descreve a CENA 1 do roteiro (ambiente, ação e enquadramento), formato vertical 9:16, e diz que o texto na tela é em PT-BR com no máximo 3 palavras por tela.',
+    },
   },
+  required: ['headline', 'roteiro', 'titulo', 'descricao', 'hashtags', 'cta', 'videoPrompt'],
 }
 
 // --- System prompt -----------------------------------------------------------

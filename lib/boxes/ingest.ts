@@ -1,8 +1,9 @@
 // lib/boxes/ingest.ts — caixa "Aprender": condensa arquivos da marca em um
-// BrandDigest (contrato em lib/contracts.ts). Sem ANTHROPIC_API_KEY, cai no
-// fallback local (resumo + headings). Nunca inventa fatos.
+// BrandDigest (contrato em lib/contracts.ts). Com LLM disponível (Claude ou
+// GPT via lib/llm), condensa com tool use; sem chave nenhuma, cai no fallback
+// local (resumo + headings). Nunca inventa fatos.
 
-import Anthropic from '@anthropic-ai/sdk'
+import { getLLM } from '@/lib/llm'
 
 import type { BrandDigest } from '@/lib/contracts'
 
@@ -33,31 +34,27 @@ export function hasAllowedExtension(nome: string): boolean {
   return ALLOWED_EXTENSION.test(nome)
 }
 
-const DIGEST_TOOL: Anthropic.Tool = {
-  name: 'criar_brand_digest',
-  description:
-    'Condensa o material bruto da marca em um BrandDigest: resumo curto e fatos objetivos, sempre fiéis ao texto enviado. Nunca invente informações que não estejam no texto.',
-  input_schema: {
-    type: 'object',
-    properties: {
-      resumo: {
-        type: 'string',
-        description:
-          'Resumo da marca em PT-BR, com no máximo 400 caracteres. Sintetiza o que a marca vende, para quem e o tom.',
-      },
-      fatos: {
-        type: 'array',
-        items: { type: 'string' },
-        description:
-          'Fatos curtos e fiéis ao texto: produtos, público, dores, tom de voz, campanhas. Bullets de poucas palavras. Nunca inventar.',
-      },
-    },
-    required: ['resumo', 'fatos'],
-  },
-}
+const DIGEST_TOOL_NAME = 'criar_brand_digest'
 
-function llmModel(): string {
-  return process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-5'
+const DIGEST_TOOL_DESCRIPTION =
+  'Condensa o material bruto da marca em um BrandDigest: resumo curto e fatos objetivos, sempre fiéis ao texto enviado. Nunca invente informações que não estejam no texto.'
+
+const DIGEST_JSON_SCHEMA: Record<string, unknown> = {
+  type: 'object',
+  properties: {
+    resumo: {
+      type: 'string',
+      description:
+        'Resumo da marca em PT-BR, com no máximo 400 caracteres. Sintetiza o que a marca vende, para quem e o tom.',
+    },
+    fatos: {
+      type: 'array',
+      items: { type: 'string' },
+      description:
+        'Fatos curtos e fiéis ao texto: produtos, público, dores, tom de voz, campanhas. Bullets de poucas palavras. Nunca inventar.',
+    },
+  },
+  required: ['resumo', 'fatos'],
 }
 
 function joinTexts(files: IngestFile[]): string {
@@ -111,36 +108,25 @@ export async function ingestFiles(files: IngestFile[]): Promise<BrandDigest> {
 
   const textoCompleto = joinTexts(files)
 
-  if (!process.env.ANTHROPIC_API_KEY) {
+  const provider = getLLM()
+  if (!provider) {
     const { resumo, fatos } = localFallback(textoCompleto)
     return { resumo, fatos, arquivos }
   }
 
   try {
-    const client = new Anthropic()
-    const response = await client.messages.create({
-      model: llmModel(),
-      max_tokens: 1024,
+    const output = await provider.generateStructured({
       system:
         'Você condensa material bruto de uma marca em um resumo objetivo e em fatos curtos, em PT-BR. ' +
         'Seja fiel ao texto: nunca invente produtos, números ou afirmações que não estejam no material.',
       messages: [{ role: 'user', content: textoCompleto }],
-      tools: [DIGEST_TOOL],
-      tool_choice: { type: 'tool', name: DIGEST_TOOL.name },
+      toolName: DIGEST_TOOL_NAME,
+      toolDescription: DIGEST_TOOL_DESCRIPTION,
+      jsonSchema: DIGEST_JSON_SCHEMA,
+      maxTokens: 1024,
     })
 
-    const toolUse = response.content.find(
-      (block): block is Anthropic.ToolUseBlock =>
-        block.type === 'tool_use' && block.name === DIGEST_TOOL.name
-    )
-    if (!toolUse) {
-      throw new IngestError(
-        'A IA não devolveu um resumo válido. Tente novamente.',
-        500
-      )
-    }
-
-    const { resumo, fatos } = parseDigestInput(toolUse.input)
+    const { resumo, fatos } = parseDigestInput(output)
     if (!resumo.trim()) {
       throw new IngestError(
         'A IA não devolveu um resumo válido. Tente novamente.',
@@ -156,7 +142,7 @@ export async function ingestFiles(files: IngestFile[]): Promise<BrandDigest> {
   } catch (error) {
     if (error instanceof IngestError) throw error
     throw new IngestError(
-      'Falha ao condensar o material com a IA. Verifique a chave ANTHROPIC_API_KEY e tente novamente.',
+      'Falha ao condensar o material com a IA. Verifique a chave de LLM configurada e tente novamente.',
       500
     )
   }

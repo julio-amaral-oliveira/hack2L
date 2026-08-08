@@ -1,9 +1,9 @@
 // lib/boxes/interviewPrompt.ts — caixa "Aprender": monta o system prompt do
-// entrevistador de diagnóstico, o schema zod do InterviewTurn e a ferramenta
-// de tool use para o Claude. A saída é sempre um JSON InterviewTurn
-// (contrato em lib/contracts.ts). O campo message é a próxima fala.
+// entrevistador de diagnóstico, o schema zod do InterviewTurn e o schema JSON
+// neutro da ferramenta de tool use (consumido pelo adapter de LLM em lib/llm).
+// A saída é sempre um JSON InterviewTurn (contrato em lib/contracts.ts).
+// O campo message é a próxima fala.
 
-import Anthropic from '@anthropic-ai/sdk'
 import { z } from 'zod'
 
 import type { BrandDigest, ChatMessage, Diagnosis } from '@/lib/contracts'
@@ -78,73 +78,71 @@ export const interviewTurnSchema = z.object({
 
 export type InterviewTurnOutput = z.infer<typeof interviewTurnSchema>
 
-// --- Ferramenta de tool use -------------------------------------------------
+// --- Ferramenta de tool use (schema JSON neutro do adapter de LLM) ----------
 
-export const interviewTool: Anthropic.Tool = {
-  name: INTERVIEW_TOOL_NAME,
-  description:
-    'Registra o próximo turno da entrevista de diagnóstico: a próxima fala do ' +
-    'entrevistador (message), o diagnóstico parcial acumulado (diagnosis) e se a ' +
-    'entrevista está completa (complete).',
-  input_schema: {
-    type: 'object',
-    properties: {
-      message: {
-        type: 'string',
-        description:
-          'Próxima fala do entrevistador em PT-BR: UMA pergunta direta por vez, ou a mensagem de fechamento quando complete for true. Ancore nas respostas e nos fatos da marca.',
-      },
-      diagnosis: {
-        type: 'object',
-        properties: {
-          prospect: {
-            type: 'string',
-            description: 'Quem é o prospect ideal da marca.',
-          },
-          desejoDominante: {
-            type: 'string',
-            description: 'O desejo mais forte do prospect que a marca atende.',
-          },
-          nivelConsciencia: {
-            type: 'string',
-            enum: ['unaware', 'problem_aware', 'solution_aware', 'product_aware', 'most_aware'],
-            description: 'Nível de consciência do prospect (Eugene Schwartz).',
-          },
-          sofisticacaoMercado: {
-            type: 'string',
-            enum: ['baixa', 'media', 'alta'],
-            description: 'Quão cansado o mercado está das promessas comuns.',
-          },
-          crencas: {
-            type: 'array',
-            items: { type: 'string' },
-            description: 'Crenças do prospect sobre a categoria.',
-          },
-          objeicoes: {
-            type: 'array',
-            items: { type: 'string' },
-            description: 'Objeções que o prospect levanta antes de comprar.',
-          },
-          mecanismo: {
-            type: 'string',
-            description: 'O mecanismo que torna a promessa da marca crível.',
-          },
-          prova: {
-            type: 'string',
-            description: 'Prova real disponível nos fatos da marca. Nunca inventar.',
-          },
-        },
-        description:
-          'Diagnóstico parcial ACUMULADO: mantenha os campos já preenchidos e acrescente o que a última resposta revelou.',
-      },
-      complete: {
-        type: 'boolean',
-        description:
-          'true quando o diagnóstico fecha (oito campos preenchidos, forceComplete ou 8 perguntas feitas).',
-      },
+export const interviewToolDescription =
+  'Registra o próximo turno da entrevista de diagnóstico: a próxima fala do ' +
+  'entrevistador (message), o diagnóstico parcial acumulado (diagnosis) e se a ' +
+  'entrevista está completa (complete).'
+
+export const interviewJsonSchema: Record<string, unknown> = {
+  type: 'object',
+  properties: {
+    message: {
+      type: 'string',
+      description:
+        'Próxima fala do entrevistador em PT-BR: UMA pergunta direta por vez, ou a mensagem de fechamento quando complete for true. Ancore nas respostas e nos fatos da marca.',
     },
-    required: ['message', 'diagnosis', 'complete'],
+    diagnosis: {
+      type: 'object',
+      properties: {
+        prospect: {
+          type: 'string',
+          description: 'Quem é o prospect ideal da marca.',
+        },
+        desejoDominante: {
+          type: 'string',
+          description: 'O desejo mais forte do prospect que a marca atende.',
+        },
+        nivelConsciencia: {
+          type: 'string',
+          enum: ['unaware', 'problem_aware', 'solution_aware', 'product_aware', 'most_aware'],
+          description: 'Nível de consciência do prospect (Eugene Schwartz).',
+        },
+        sofisticacaoMercado: {
+          type: 'string',
+          enum: ['baixa', 'media', 'alta'],
+          description: 'Quão cansado o mercado está das promessas comuns.',
+        },
+        crencas: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Crenças do prospect sobre a categoria.',
+        },
+        objeicoes: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Objeções que o prospect levanta antes de comprar.',
+        },
+        mecanismo: {
+          type: 'string',
+          description: 'O mecanismo que torna a promessa da marca crível.',
+        },
+        prova: {
+          type: 'string',
+          description: 'Prova real disponível nos fatos da marca. Nunca inventar.',
+        },
+      },
+      description:
+        'Diagnóstico parcial ACUMULADO: mantenha os campos já preenchidos e acrescente o que a última resposta revelou.',
+    },
+    complete: {
+      type: 'boolean',
+      description:
+        'true quando o diagnóstico fecha (oito campos preenchidos, forceComplete ou 8 perguntas feitas).',
+    },
   },
+  required: ['message', 'diagnosis', 'complete'],
 }
 
 // --- System prompt -----------------------------------------------------------
