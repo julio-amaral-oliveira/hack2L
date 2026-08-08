@@ -4,129 +4,149 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>BrandLoop — Hack2L</title>
-<meta name="description" content="Deck do BrandLoop para o Demo Day do Hack2L. O agente de marketing que roda o funil inteiro, ponta a ponta." />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='25' font-size='24'%3E%F0%9F%94%81%3C/text%3E%3C/svg%3E" />
+<meta name="description" content="A IA ensinou todo mundo a fazer anúncio. E ensinou todo anúncio a parecer igual." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%23FFD400'/%3E%3Ccircle cx='16' cy='16' r='4.5' fill='%230A0A0A'/%3E%3C/svg%3E" />
 <style>
   :root {
-    --fg: #FAF6F0; --fg-dim: #B6A99C; --fg-faint: #7A6E64;
-    --bg: #14100E; --bg-2: #1E1815;
-    --amber: #FF7A2F; --moss: #7FA86F;
-    --line: rgba(250, 246, 240, 0.10); --line-2: rgba(250, 246, 240, 0.05);
+    --preto:  #0A0A0A;
+    --cru:    #F3EFE5;
+    --amarelo:#FFD400;
+    --coral:  #FF664A;
+    --violeta:#A78BFA;
+    --menta:  #9FF5D0;
+    --cinza:  #8A8A86;
+
+    --bg: var(--preto); --fg: var(--cru); --dim: #A8A49B; --faint: var(--cinza);
+    --line: rgba(243,239,229,.14); --line-2: rgba(243,239,229,.06); --panel: #101010;
+
     --sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
     --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, "Cascadia Mono", Consolas, monospace;
   }
   @media (prefers-color-scheme: light) {
-    :root { --fg:#14100E; --fg-dim:#5C5148; --fg-faint:#948779; --bg:#FAF6F0; --bg-2:#F1EAE0;
-      --line:rgba(20,16,14,.14); --line-2:rgba(20,16,14,.07); --amber:#D9541A; --moss:#4E7842; }
+    :root { --bg: var(--cru); --fg: var(--preto); --dim: #4A4842; --faint: #6E6C66;
+      --line: rgba(10,10,10,.16); --line-2: rgba(10,10,10,.07); --panel: #EDE8DC; }
   }
-  :root[data-theme="dark"] { --fg:#FAF6F0; --fg-dim:#B6A99C; --fg-faint:#7A6E64; --bg:#14100E; --bg-2:#1E1815;
-    --line:rgba(250,246,240,.10); --line-2:rgba(250,246,240,.05); --amber:#FF7A2F; --moss:#7FA86F; }
-  :root[data-theme="light"] { --fg:#14100E; --fg-dim:#5C5148; --fg-faint:#948779; --bg:#FAF6F0; --bg-2:#F1EAE0;
-    --line:rgba(20,16,14,.14); --line-2:rgba(20,16,14,.07); --amber:#D9541A; --moss:#4E7842; }
+  :root[data-theme="dark"] { --bg: var(--preto); --fg: var(--cru); --dim:#A8A49B; --faint: var(--cinza);
+    --line: rgba(243,239,229,.14); --line-2: rgba(243,239,229,.06); --panel:#101010; }
+  :root[data-theme="light"] { --bg: var(--cru); --fg: var(--preto); --dim:#4A4842; --faint:#6E6C66;
+    --line: rgba(10,10,10,.16); --line-2: rgba(10,10,10,.07); --panel:#EDE8DC; }
 
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--fg); font-family: var(--sans);
     -webkit-font-smoothing: antialiased; font-variant-numeric: tabular-nums; }
 
-  .deck { scroll-snap-type: y mandatory; height: 100vh; overflow-y: auto; scroll-behavior: smooth; }
+  /* grão de sensor — muito sutil, o suficiente para não parecer slide de SaaS */
+  body::after {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 2; opacity: .04;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .deck { scroll-snap-type: y mandatory; height: 100vh; overflow-y: auto; scroll-behavior: smooth; position: relative; z-index: 1; }
   .s { scroll-snap-align: start; min-height: 100vh;
     padding: clamp(2.5rem,6vh,4.5rem) clamp(1.5rem,6vw,6rem) clamp(4rem,8vh,5.5rem);
     display: flex; flex-direction: column; justify-content: center;
-    gap: clamp(1.1rem,2.6vh,2rem); border-bottom: 1px solid var(--line-2); position: relative; }
-  .s > * { max-width: 70rem; width: 100%; }
+    gap: clamp(1.1rem,2.6vh,2rem); position: relative; }
+  .s > * { max-width: 72rem; width: 100%; }
 
   .meta { position: absolute; top: clamp(1.5rem,4vh,2.5rem); right: clamp(1.5rem,6vw,6rem);
-    display: flex; gap: 1rem; font-family: var(--mono); font-size: .72rem; color: var(--fg-faint); letter-spacing: .08em; }
-  .meta .t { color: var(--amber); }
-  .eyebrow { font-family: var(--mono); font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: var(--amber); }
-  h1 { font-size: clamp(2.6rem,7.5vw,5.6rem); line-height: .95; letter-spacing: -.045em; font-weight: 800; margin: 0; text-wrap: balance; }
-  h2 { font-size: clamp(1.75rem,4.2vw,3.2rem); line-height: 1.04; letter-spacing: -.035em; font-weight: 750; margin: 0; text-wrap: balance; }
-  .lede { font-size: clamp(1rem,1.6vw,1.3rem); line-height: 1.5; color: var(--fg-dim); max-width: 46ch; margin: 0; }
-  p { margin: 0; }
-  .am { color: var(--amber); }
-  .thesis { font-size: clamp(1.5rem,3.7vw,2.9rem); line-height: 1.18; letter-spacing: -.03em; font-weight: 650; margin: 0; max-width: 25ch; text-wrap: balance; }
-  .thesis em { font-style: normal; color: var(--amber); }
+    display: flex; gap: 1rem; font-family: var(--mono); font-size: .7rem; color: var(--faint); letter-spacing: .1em; }
+  .meta .t { color: var(--amarelo); }
+  .eyebrow { font-family: var(--mono); font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--faint); }
 
-  /* pipeline — a espinha do deck */
-  .pipe { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
-  .pipe > div { background: var(--bg); padding: clamp(.85rem,1.7vw,1.15rem); display: flex; flex-direction: column; gap: .45rem; }
-  .pipe .n { font-family: var(--mono); font-size: .68rem; letter-spacing: .12em; color: var(--fg-faint); }
-  .pipe .st { font-size: clamp(.9rem,1.4vw,1.05rem); font-weight: 620; line-height: 1.2; letter-spacing: -.015em; }
-  .pipe .rt { font-family: var(--mono); font-size: .64rem; color: var(--fg-faint); letter-spacing: .04em; }
-  .pipe .on { border-top: 2px solid var(--amber); }
-  .pipe .on .n, .pipe .on .rt { color: var(--amber); }
+  h1 { font-size: clamp(2.7rem,8.2vw,6.5rem); line-height: .92; letter-spacing: -.05em; font-weight: 800; margin: 0; text-wrap: balance; }
+  h2 { font-size: clamp(1.9rem,5vw,3.9rem); line-height: 1.0; letter-spacing: -.04em; font-weight: 780; margin: 0; text-wrap: balance; }
+  .lede { font-size: clamp(1rem,1.6vw,1.28rem); line-height: 1.5; color: var(--dim); max-width: 48ch; margin: 0; }
+  p { margin: 0; }
+  .y { color: var(--amarelo); }
+
+  /* wordmark */
+  .mark { display: flex; align-items: center; gap: .7rem; font-weight: 800; letter-spacing: -.04em;
+    font-size: clamp(1.6rem,3.4vw,2.6rem); }
+  .mark .o { width: .8em; height: .8em; border-radius: 50%; background: var(--amarelo);
+    display: grid; place-items: center; flex: none; }
+  .mark .o::after { content: ''; width: .28em; height: .28em; border-radius: 50%; background: var(--preto); }
+
+  /* fluxo do agente */
+  .flow { display: grid; grid-template-columns: repeat(auto-fit,minmax(190px,1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .flow > div { background: var(--bg); padding: clamp(.9rem,1.8vw,1.25rem); display: flex; flex-direction: column; gap: .45rem; }
+  .flow .n { font-family: var(--mono); font-size: .66rem; letter-spacing: .14em; color: var(--faint); }
+  .flow .st { font-size: clamp(.92rem,1.4vw,1.08rem); font-weight: 650; line-height: 1.2; letter-spacing: -.02em; }
+  .flow .rt { font-family: var(--mono); font-size: .62rem; color: var(--faint); letter-spacing: .04em; }
+  .flow .on { border-top: 2px solid var(--amarelo); }
+  .flow .on .n, .flow .on .rt { color: var(--amarelo); }
+
+  /* dimensões da marca — único lugar com coral/menta/violeta */
+  .dims { display: grid; grid-template-columns: repeat(auto-fit,minmax(190px,1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .dims > div { background: var(--bg); padding: clamp(1.1rem,2.2vw,1.6rem); display: flex; flex-direction: column; gap: .5rem; border-top: 3px solid; }
+  .dims .d1 { border-color: var(--coral); } .dims .d2 { border-color: var(--menta); } .dims .d3 { border-color: var(--violeta); }
+  .dims .k { font-family: var(--mono); font-size: .66rem; letter-spacing: .15em; text-transform: uppercase; color: var(--faint); }
+  .dims .v { font-size: clamp(1rem,1.6vw,1.2rem); line-height: 1.35; }
 
   /* funil */
-  .funnel { display: flex; flex-wrap: wrap; align-items: stretch; gap: 1px; background: var(--line); border: 1px solid var(--line); }
-  .funnel > div { background: var(--bg); flex: 1 1 8rem; padding: clamp(1rem,2vw,1.5rem); display: flex; flex-direction: column; gap: .4rem; }
-  .funnel .f { font-family: var(--mono); font-size: .64rem; letter-spacing: .13em; text-transform: uppercase; color: var(--fg-faint); }
-  .funnel .g { font-size: clamp(1rem,1.8vw,1.3rem); font-weight: 680; letter-spacing: -.02em; }
-  .funnel .last .g { color: var(--amber); }
-
-  .gap2 { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); }
-  @media (min-width: 800px) { .gap2 { grid-template-columns: 1fr 1fr; } }
-  .gap2 > div { background: var(--bg); padding: clamp(1.4rem,2.8vw,2.2rem); display: flex; flex-direction: column; gap: .85rem; }
-  .gap2 .who { font-family: var(--mono); font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--fg-faint); }
-  .gap2 .said { font-size: clamp(1.15rem,2.2vw,1.7rem); line-height: 1.25; letter-spacing: -.02em; font-weight: 600; }
-  .gap2 .b .said { color: var(--amber); }
+  .funnel { display: flex; flex-wrap: wrap; gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .funnel > div { background: var(--bg); flex: 1 1 8rem; padding: clamp(1rem,2vw,1.5rem); display: flex; flex-direction: column; gap: .35rem; }
+  .funnel .f { font-family: var(--mono); font-size: .62rem; letter-spacing: .14em; color: var(--faint); }
+  .funnel .g { font-size: clamp(1rem,1.8vw,1.28rem); font-weight: 700; letter-spacing: -.025em; }
+  .funnel .last { background: var(--amarelo); } .funnel .last .g, .funnel .last .f { color: var(--preto); }
 
   .metrics { display: grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); }
   .metrics div { background: var(--bg); padding: clamp(1rem,2vw,1.6rem); display: flex; flex-direction: column; gap: .35rem; }
-  .metrics .v { font-size: clamp(1.6rem,3.6vw,2.7rem); font-weight: 800; letter-spacing: -.045em; line-height: 1; }
-  .metrics .k { font-family: var(--mono); font-size: .66rem; letter-spacing: .13em; text-transform: uppercase; color: var(--fg-faint); }
+  .metrics .v { font-size: clamp(1.6rem,3.8vw,2.9rem); font-weight: 800; letter-spacing: -.05em; line-height: 1; }
+  .metrics .k { font-family: var(--mono); font-size: .64rem; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
 
-  .receipt { font-family: var(--mono); font-size: clamp(.66rem,1vw,.76rem); color: var(--fg-faint); line-height: 1.9;
-    overflow-x: auto; border-left: 2px solid var(--amber); padding-left: 1rem; }
-  .receipt b { color: var(--fg-dim); font-weight: 400; }
+  .receipt { font-family: var(--mono); font-size: clamp(.64rem,1vw,.74rem); color: var(--faint); line-height: 1.9;
+    overflow-x: auto; border-left: 2px solid var(--amarelo); padding-left: 1rem; }
+  .receipt b { color: var(--dim); font-weight: 400; }
 
   .cmp { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); }
   @media (min-width: 800px) { .cmp { grid-template-columns: 1fr 1fr; } }
   .cmp > div { background: var(--bg); padding: clamp(1.4rem,2.8vw,2.2rem); display: flex; flex-direction: column; gap: .9rem; }
-  .cmp .tag { font-family: var(--mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--fg-faint); }
-  .cmp .out { font-size: clamp(1.05rem,2vw,1.45rem); line-height: 1.3; letter-spacing: -.02em; font-weight: 600; }
-  .cmp .win { border-top: 2px solid var(--amber); }
-  .cmp .win .tag { color: var(--amber); }
-  .cmp .lose .out { color: var(--fg-faint); }
-
-  .loop { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .8rem; font-family: var(--mono);
-    font-size: clamp(.7rem,1.2vw,.88rem); letter-spacing: .04em; }
-  .loop span { padding: .45rem .75rem; border: 1px solid var(--line); color: var(--fg-dim); }
-  .loop .hot { border-color: var(--amber); color: var(--amber); }
-  .loop i { font-style: normal; color: var(--fg-faint); }
+  .cmp .tag { font-family: var(--mono); font-size: .66rem; letter-spacing: .15em; text-transform: uppercase; color: var(--faint); }
+  .cmp .out { font-size: clamp(1.05rem,2vw,1.45rem); line-height: 1.3; letter-spacing: -.025em; font-weight: 620; }
+  .cmp .win { border-top: 3px solid var(--amarelo); }
+  .cmp .win .tag { color: var(--amarelo); }
+  .cmp .lose .out { color: var(--faint); }
 
   .rows { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
-  .rows > div { display: grid; grid-template-columns: 1fr; gap: .25rem; padding: clamp(.8rem,1.6vh,1.15rem) 0; border-bottom: 1px solid var(--line); }
-  @media (min-width: 760px) { .rows > div { grid-template-columns: 14rem 1fr; gap: 2rem; align-items: baseline; } }
-  .rows .lbl { font-family: var(--mono); font-size: .7rem; letter-spacing: .13em; text-transform: uppercase; color: var(--fg-faint); }
-  .rows .val { font-size: clamp(.98rem,1.5vw,1.15rem); line-height: 1.45; }
-  .rows .val b { color: var(--amber); font-weight: 650; }
+  .rows > div { display: grid; grid-template-columns: 1fr; gap: .25rem; padding: clamp(.8rem,1.6vh,1.1rem) 0; border-bottom: 1px solid var(--line); }
+  @media (min-width: 760px) { .rows > div { grid-template-columns: 13rem 1fr; gap: 2rem; align-items: baseline; } }
+  .rows .lbl { font-family: var(--mono); font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); }
+  .rows .val { font-size: clamp(.96rem,1.5vw,1.14rem); line-height: 1.45; }
+  .rows .val b { color: var(--amarelo); font-weight: 650; }
 
   .chips { display: flex; flex-direction: column; border: 1px solid var(--line); }
   .chips > div { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem 1rem;
-    padding: clamp(.75rem,1.5vh,1rem) clamp(1rem,2vw,1.4rem); border-bottom: 1px solid var(--line); }
+    padding: clamp(.7rem,1.5vh,.95rem) clamp(1rem,2vw,1.4rem); border-bottom: 1px solid var(--line); }
   .chips > div:last-child { border-bottom: 0; }
-  .chip { font-family: var(--mono); font-size: .62rem; letter-spacing: .13em; text-transform: uppercase;
-    padding: .28rem .55rem; border: 1px solid currentColor; flex: none; }
-  .real { color: var(--moss); } .sim { color: var(--fg-faint); }
-  .chips .what { font-size: clamp(.9rem,1.4vw,1.05rem); line-height: 1.4; }
-  .chips code, code { font-family: var(--mono); font-size: .9em; }
+  .chip { font-family: var(--mono); font-size: .6rem; letter-spacing: .14em; text-transform: uppercase;
+    padding: .26rem .55rem; border: 1px solid currentColor; flex: none; }
+  .real { color: var(--menta); } .sim { color: var(--faint); }
+  .chips .what { font-size: clamp(.88rem,1.4vw,1.02rem); line-height: 1.4; }
+  code { font-family: var(--mono); font-size: .9em; }
 
-  .quotes { display: flex; flex-direction: column; gap: clamp(.8rem,1.8vh,1.2rem); }
+  .quotes { display: flex; flex-direction: column; gap: clamp(.7rem,1.6vh,1.1rem); }
   .quotes blockquote { margin: 0; padding-left: 1rem; border-left: 2px solid var(--line);
-    font-size: clamp(.98rem,1.8vw,1.28rem); line-height: 1.35; letter-spacing: -.015em; }
-  .quotes cite { display: block; margin-top: .4rem; font-family: var(--mono); font-size: .66rem;
-    letter-spacing: .1em; color: var(--fg-faint); font-style: normal; }
+    font-size: clamp(.96rem,1.7vw,1.22rem); line-height: 1.35; letter-spacing: -.02em; }
+  .quotes cite { display: block; margin-top: .35rem; font-family: var(--mono); font-size: .64rem;
+    letter-spacing: .1em; color: var(--faint); font-style: normal; }
 
-  .end { font-size: clamp(1.1rem,2.1vw,1.5rem); line-height: 1.4; max-width: 36ch; letter-spacing: -.02em; }
-  .backup { border: 1px dashed var(--line); padding: .4rem .7rem; font-family: var(--mono);
-    font-size: .66rem; letter-spacing: .13em; text-transform: uppercase; color: var(--fg-faint); align-self: flex-start; }
+  /* slide final — fundo amarelo, marca em preto */
+  .s.gold { background: var(--amarelo); color: var(--preto); }
+  .s.gold .eyebrow, .s.gold .meta { color: rgba(10,10,10,.55); }
+  .s.gold .meta .t { color: var(--preto); }
+  .s.gold .lede { color: rgba(10,10,10,.72); }
+  .s.gold .mark .o { background: var(--preto); }
+  .s.gold .mark .o::after { background: var(--amarelo); }
 
-  .ctl { position: fixed; bottom: 1rem; right: 1rem; z-index: 10; display: flex; gap: .4rem; font-family: var(--mono); font-size: .68rem; }
-  .ctl button { font: inherit; letter-spacing: .1em; text-transform: uppercase; background: var(--bg-2);
-    color: var(--fg-dim); border: 1px solid var(--line); padding: .5rem .7rem; cursor: pointer; }
-  .ctl button:hover { color: var(--amber); border-color: var(--amber); }
-  .ctl button:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+  .backup { border: 1px dashed var(--line); padding: .35rem .7rem; font-family: var(--mono);
+    font-size: .64rem; letter-spacing: .14em; text-transform: uppercase; color: var(--faint); align-self: flex-start; }
+
+  .ctl { position: fixed; bottom: 1rem; right: 1rem; z-index: 10; display: flex; gap: .4rem; font-family: var(--mono); font-size: .66rem; }
+  .ctl button { font: inherit; letter-spacing: .12em; text-transform: uppercase; background: var(--panel);
+    color: var(--dim); border: 1px solid var(--line); padding: .5rem .7rem; cursor: pointer; }
+  .ctl button:hover { color: var(--amarelo); border-color: var(--amarelo); }
+  .ctl button:focus-visible { outline: 2px solid var(--amarelo); outline-offset: 2px; }
 
   @media (prefers-reduced-motion: no-preference) {
     .s > * { animation: rise .5s cubic-bezier(.2,.7,.3,1) both; }
@@ -137,16 +157,17 @@
   @page { size: A4 landscape; margin: 12mm; }
   @media print {
     :root, :root[data-theme="dark"], :root[data-theme="light"] {
-      --fg:#14100E; --fg-dim:#443C35; --fg-faint:#6E635A; --bg:#fff; --bg-2:#fff;
-      --line:rgba(20,16,14,.28); --line-2:rgba(20,16,14,.12); --amber:#B8430F; --moss:#3D6233; }
-    .ctl { display: none; }
+      --bg:#fff; --fg:#0A0A0A; --dim:#3A3833; --faint:#6E6C66;
+      --line:rgba(10,10,10,.3); --line-2:rgba(10,10,10,.12); --panel:#fff; --amarelo:#B58A00; }
+    body::after, .ctl { display: none; }
     .deck { height: auto; overflow: visible; scroll-snap-type: none; }
     .s { min-height: 0; height: auto; break-after: page; page-break-after: always;
-      border-bottom: 0; padding: 0 0 1.2rem; justify-content: flex-start; gap: 1rem; }
+      padding: 0 0 1.2rem; justify-content: flex-start; gap: 1rem; background: #fff !important; color: #0A0A0A !important; }
     .s:last-child { break-after: auto; page-break-after: auto; }
     .s > * { animation: none !important; }
-    h1 { font-size: 2.8rem; } h2 { font-size: 1.8rem; } .thesis { font-size: 1.6rem; } .metrics .v { font-size: 1.8rem; }
-    .pipe > div, .gap2 > div, .cmp > div, .metrics div, .funnel > div { background: #fff; }
+    h1 { font-size: 3rem; } h2 { font-size: 1.9rem; } .metrics .v { font-size: 1.8rem; }
+    .flow > div, .dims > div, .cmp > div, .metrics div, .funnel > div { background: #fff; }
+    .funnel .last { background: #fff; } .funnel .last .g { color: #B58A00; }
   }
 </style>
 </head>
@@ -159,102 +180,69 @@
 
 <div class="deck" id="deck">
 
-  <!-- 1 -->
+  <!-- 1 · a tensão -->
   <section class="s">
-    <span class="meta"><span class="t">0:00–0:20</span><span>01 / 10</span></span>
-    <p class="eyebrow">Hack2L · AI Agents · Canastra Ventures</p>
-    <h1>Brand<span class="am">Loop</span></h1>
-    <h2 style="max-width:22ch">O agente de marketing que roda o funil inteiro. Sozinho.</h2>
-    <p class="lede">Pesquisa o mercado, aprende a empresa, entrevista o comercial, escreve o roteiro, produz o criativo, publica no anúncio e otimiza a campanha até a venda.</p>
+    <span class="meta"><span class="t">0:00–0:20</span><span>01 / 09</span></span>
+    <h1>A IA ensinou todo mundo a fazer anúncio.<br /><span class="y">E todo anúncio a parecer igual.</span></h1>
   </section>
 
-  <!-- 2 -->
+  <!-- 2 · o reenquadramento -->
   <section class="s">
-    <span class="meta"><span class="t">0:20–0:35</span><span>02 / 10</span></span>
-    <p class="eyebrow">O problema</p>
-    <div class="gap2">
-      <div class="a">
-        <span class="who">O que a marca diz</span>
-        <span class="said">“O iFood gerando venda para o seu negócio.”</span>
-        <span class="who">canal oficial iFood para Parceiros</span>
-      </div>
-      <div class="b">
-        <span class="who">O que o cliente dela diz</span>
-        <span class="said">“iFood é parceiro… ou prisão?”</span>
-        <span class="who">conversa pública, últimos 90 dias</span>
-      </div>
+    <span class="meta"><span class="t">0:20–0:35</span><span>02 / 09</span></span>
+    <p class="eyebrow">O que virou commodity, e o que não virou</p>
+    <h2>Produzir não é mais a vantagem.<br />Ser reconhecível é.</h2>
+    <p class="lede">Quando a mesma lógica, a mesma estética e o mesmo prompt alimentam todo mundo, as marcas viram variação do mesmo template. Produzir ficou barato. Uma marca genérica continua cara.</p>
+  </section>
+
+  <!-- 3 · o agente começa na marca -->
+  <section class="s">
+    <span class="meta"><span class="t">0:35–0:55</span><span>03 / 09</span></span>
+    <p class="eyebrow">Primeiro passo — a inversão</p>
+    <h2>A BrandLoop começa onde as outras IAs terminam:<br />na marca.</h2>
+    <p class="lede">Antes de escrever uma linha, o agente entrevista quem conhece a empresa. A empresa sobe o contexto que quiser, e ele conduz uma rodada de perguntas com as lideranças — uma por vez, cada uma mirando só o que ainda falta.</p>
+    <div class="dims">
+      <div class="d1"><span class="k">Tom</span><span class="v">Como a marca fala quando é ela mesma</span></div>
+      <div class="d2"><span class="k">Público</span><span class="v">Quem compra, e qual objeção mata a venda</span></div>
+      <div class="d3"><span class="k">Estética</span><span class="v">O que faz a peça ser reconhecível sem logo</span></div>
     </div>
-    <p class="thesis" style="max-width:30ch">Todo agente de marketing começa no briefing. <em>O mercado não lê briefing.</em></p>
   </section>
 
-  <!-- 3 — a espinha -->
+  <!-- 4 · e vai ao mercado -->
   <section class="s">
-    <span class="meta"><span class="t">0:35–0:55</span><span>03 / 10</span></span>
-    <p class="eyebrow">O que o agente faz — ponta a ponta</p>
-    <div class="pipe">
-      <div class="on"><span class="n">01</span><span class="st">Pesquisa de mercado</span><span class="rt">gorilla api · 5 redes</span></div>
-      <div class="on"><span class="n">02</span><span class="st">Contexto da empresa</span><span class="rt">/api/ingest</span></div>
-      <div class="on"><span class="n">03</span><span class="st">Treina com o comercial</span><span class="rt">/api/interview</span></div>
-      <div class="on"><span class="n">04</span><span class="st">Roteiro</span><span class="rt">/api/copy</span></div>
-      <div class="on"><span class="n">05</span><span class="st">Criativo</span><span class="rt">/api/video</span></div>
-      <div><span class="n">06</span><span class="st">Sobe no anúncio</span><span class="rt">/api/publish</span></div>
-      <div><span class="n">07</span><span class="st">Analisa a campanha</span><span class="rt">/api/campaign</span></div>
-      <div><span class="n">08</span><span class="st">Otimiza e repete</span><span class="rt">loop</span></div>
-    </div>
-    <p class="lede">Oito etapas. Hoje, cada uma é um fornecedor diferente: agência de pesquisa, redator, produtora, gestor de tráfego. <span class="am">Aqui é um agente só, e nenhuma etapa espera humano para começar a próxima.</span></p>
-  </section>
-
-  <!-- 4 -->
-  <section class="s">
-    <span class="meta"><span class="t">0:55–1:20</span><span>04 / 10</span></span>
-    <p class="eyebrow">Etapa 01 — Pesquisa de mercado</p>
-    <h2>Ele não leu o site da marca.<br />Leu 1.516 conversas reais.</h2>
+    <span class="meta"><span class="t">0:55–1:20</span><span>04 / 09</span></span>
+    <p class="eyebrow">Só depois — a verificação</p>
+    <h2>Aí sim ele confere lá fora<br />se é isso mesmo.</h2>
+    <p class="lede">Com a marca já entendida, o agente vai ao mercado ver como a empresa está sendo comentada sobre aquele assunto — conversa real de gente real, em cinco plataformas. Custou menos de um dólar.</p>
     <div class="metrics">
-      <div><span class="v">1.516</span><span class="k">conversas em 5 redes</span></div>
-      <div><span class="v">57</span><span class="k">sinais quentes</span></div>
-      <div><span class="v">158,7s</span><span class="k">tempo total</span></div>
-      <div><span class="v">US$ 0,89</span><span class="k">custo total</span></div>
+      <div><span class="v">1.516</span><span class="k">conversas reais lidas</span></div>
+      <div><span class="v">5</span><span class="k">plataformas</span></div>
+      <div><span class="v">&lt; 3 min</span><span class="k">menos que este pitch</span></div>
     </div>
-    <p class="lede">A descoberta: os resultados mais relevantes dizem todos a mesma coisa — <span class="am">“me ensina a fazer a conta”</span>. A concorrência não é uma agência. É uma planilha vendida no YouTube.</p>
-    <p class="receipt"><b>search_id</b> 4554b5ce…ab84 &nbsp;·&nbsp; 908fb448…cc9a &nbsp;·&nbsp; reddit 453 · bluesky 158 · youtube 71 · linkedin 37</p>
+    <p class="receipt"><b>e o que ele concluiu:</b> esse mercado não quer mais uma promessa de venda — quer parar de fazer a conta de madrugada.</p>
   </section>
 
-  <!-- 5 -->
+  <!-- 5 · vira direção criativa -->
   <section class="s">
-    <span class="meta"><span class="t">1:20–1:45</span><span>05 / 10</span></span>
-    <p class="eyebrow">Etapas 02 e 03 — Contexto da empresa e treino com o comercial</p>
-    <h2>Ele entrevista quem vende.</h2>
-    <p class="lede">A empresa sobe os arquivos e o agente conduz uma entrevista adaptativa com o time comercial — até <b>oito perguntas</b>, uma por vez, cada uma mirando só o que ainda falta. Sai um diagnóstico tipado de oito campos.</p>
-    <div class="rows">
-      <div><span class="lbl">Prospect</span><span class="val">Dono de restaurante que sente a taxa consumindo a margem</span></div>
-      <div><span class="lbl">Consciência</span><span class="val">Solution aware — já busca solução, não precisa ser educado</span></div>
-      <div><span class="lbl">Sofisticação</span><span class="val"><b>Estágio 4 de 5</b> — nesse estágio claim não funciona, só mecanismo</span></div>
-      <div><span class="lbl">Mecanismo</span><span class="val">Fazer a conta pelo dono, em vez de ensinar o dono a fazer</span></div>
-    </div>
-    <p class="lede">Cada campo carrega a URL do post que o originou. <span class="am">Não é opinião do modelo. É conclusão com fonte.</span></p>
-  </section>
-
-  <!-- 6 -->
-  <section class="s">
-    <span class="meta"><span class="t">1:45–2:10</span><span>06 / 10</span></span>
-    <p class="eyebrow">Etapas 04 e 05 — Roteiro e criativo</p>
+    <span class="meta"><span class="t">1:20–1:45</span><span>05 / 09</span></span>
+    <p class="eyebrow">Identidade vira direção criativa</p>
     <div class="cmp">
       <div class="lose">
-        <span class="tag">Qualquer IA, mesmo modelo</span>
+        <span class="tag">Qualquer IA · mesmo modelo</span>
         <span class="out">“Cadastre seu restaurante no iFood e venda mais! 🍔”</span>
       </div>
       <div class="win">
-        <span class="tag">Com o diagnóstico por trás</span>
-        <span class="out">“Toda taxa zero tem prazo de validade. E quem faz a sua conta, de madrugada, é você.”</span>
+        <span class="tag">Com a marca lida antes</span>
+        <span class="out">“Toda taxa zero tem prazo de validade. Aqui a taxa fica na mesa — e quem faz a conta somos nós.”</span>
       </div>
     </div>
-    <p class="lede">Mesmo modelo, mesmo briefing. A diferença é que este diagnosticou <span class="am">estágio 4</span> e sabe que precisa de mecanismo, não de promessa. Do roteiro sai o vídeo vertical, com a voz da marca.</p>
+    <p class="lede">Ele não chutou esse ângulo. Leu que a dor é <b>hora perdida na planilha</b> e <b>taxa que só aparece depois</b> — então o criativo não promete venda. Promete transparência e uma operação que o dono consegue tocar sem virar a noite fazendo conta.</p>
+    <p class="lede"><span class="y">O resultado não precisa parecer feito por IA. Precisa parecer seu.</span></p>
   </section>
 
-  <!-- 7 -->
+  <!-- 6 · publica e persegue -->
   <section class="s">
-    <span class="meta"><span class="t">2:10–2:30</span><span>07 / 10</span></span>
-    <p class="eyebrow">Etapas 06, 07 e 08 — Publica, mede e otimiza</p>
+    <span class="meta"><span class="t">1:45–2:15</span><span>06 / 09</span></span>
+    <p class="eyebrow">Não para no criativo</p>
     <h2>O agente não entrega um vídeo.<br />Ele persegue a venda.</h2>
     <div class="funnel">
       <div><span class="f">01</span><span class="g">Interação</span></div>
@@ -263,48 +251,61 @@
       <div><span class="f">04</span><span class="g">Oferta</span></div>
       <div class="last"><span class="f">05</span><span class="g">Venda</span></div>
     </div>
-    <p class="lede">Ele sobe o criativo na plataforma de anúncio e passa a ler o funil inteiro. Onde cai, ele age: criativo fraco na interação vira roteiro novo; queda entre clique e oferta vira teste de página. <span class="am">A landing page já tem tag de conversão instalada</span> — o sinal de venda volta para o agente.</p>
+    <p class="lede">Ele sobe o criativo na plataforma e lê o funil inteiro. Onde cai, ele age: fraqueza na interação vira roteiro novo; queda entre clique e oferta vira teste de página. <span class="y">A landing page já tem tag de conversão instalada</span> — o sinal de venda volta pro agente.</p>
   </section>
 
-  <!-- 8 -->
+  <!-- 7 · por que compõe -->
   <section class="s">
-    <span class="meta"><span class="t">2:30–2:45</span><span>08 / 10</span></span>
+    <span class="meta"><span class="t">2:15–2:40</span><span>07 / 09</span></span>
     <p class="eyebrow">Por que não copiam</p>
-    <div class="loop">
-      <span>pesquisa</span><i>→</i><span>contexto</span><i>→</i><span>comercial</span><i>→</i>
-      <span>roteiro</span><i>→</i><span>criativo</span><i>→</i><span>anúncio</span><i>→</i>
-      <span>venda</span><i>→</i><span class="hot">escreve de volta</span>
+    <h2>A IA cria em segundos.<br />Sua marca levou anos para virar ela mesma.</h2>
+    <p class="lede">Cada campanha devolve o que converteu, para qual público, com qual mecanismo. Isso vira memória da marca e entra na próxima. O concorrente copia o prompt numa tarde. <span class="y">Não copia o histórico.</span></p>
+    <div class="quotes">
+      <blockquote>“Gasto mais neurônios usando esses apps do que no trabalho.”<cite>r/saopaulo · achado pelo agente, não pelo briefing</cite></blockquote>
     </div>
-    <h2>Cada campanha devolve dado que só nós temos.</h2>
-    <p class="lede">O que converteu, para qual público, com qual mecanismo — isso vira memória da marca e entra na próxima campanha. O concorrente copia o prompt em uma tarde. <span class="am">Não copia o histórico.</span></p>
   </section>
 
-  <!-- 9 -->
+  <!-- 8 · negócio -->
   <section class="s">
-    <span class="meta"><span class="t">2:45–3:00</span><span>09 / 10</span></span>
-    <p class="eyebrow">Negócio e fecho</p>
+    <span class="meta"><span class="t">2:40–2:55</span><span>08 / 09</span></span>
+    <p class="eyebrow">Quem paga</p>
     <div class="rows">
-      <div><span class="lbl">Quem paga</span><span class="val">Redes e franquias de varejo local. <b>Contrato com a rede, não com a loja</b> — vende uma vez, atende N unidades.</span></div>
+      <div><span class="lbl">Cliente</span><span class="val">Rede e franquia de varejo local. <b>Contrato com a rede, não com a loja</b> — vende uma vez, atende N unidades.</span></div>
       <div><span class="lbl">Tamanho</span><span class="val">Só o iFood tem <b>500 mil estabelecimentos</b> em 1.500 cidades. É o piso.</span></div>
-      <div><span class="lbl">Alternativa hoje</span><span class="val">Quatro fornecedores — ou uma planilha do YouTube.</span></div>
+      <div><span class="lbl">Alternativa hoje</span><span class="val">Quatro fornecedores — pesquisa, redator, produtora, tráfego. Ou uma planilha vendida no YouTube.</span></div>
       <div><span class="lbl">Modelo</span><span class="val">Assinatura por unidade/mês.</span></div>
     </div>
-    <p class="end">Não somos a agência do iFood. Escolhemos o caso mais difícil do Brasil agora — <span class="am">e vocês conseguem verificar tudo.</span></p>
+    <div class="flow">
+      <div class="on"><span class="n">01</span><span class="st">Contexto da empresa</span><span class="rt">/api/ingest</span></div>
+      <div class="on"><span class="n">02</span><span class="st">Entrevista lideranças</span><span class="rt">/api/interview</span></div>
+      <div class="on"><span class="n">03</span><span class="st">Análise de mercado</span><span class="rt">/api/market</span></div>
+      <div class="on"><span class="n">04</span><span class="st">Roteiro e criativo</span><span class="rt">/api/copy · /api/video</span></div>
+      <div><span class="n">05</span><span class="st">Publica</span><span class="rt">/api/publish</span></div>
+      <div><span class="n">06</span><span class="st">Analisa e otimiza</span><span class="rt">/api/campaign</span></div>
+    </div>
   </section>
 
-  <!-- 10 — backup -->
+  <!-- 9 · fecho -->
+  <section class="s gold">
+    <span class="meta"><span class="t">2:55–3:00</span><span>09 / 09</span></span>
+    <div class="mark"><span class="o"></span>brandloop</div>
+    <h1 style="max-width:16ch">A IA que aprende a sua marca antes de falar por ela.</h1>
+    <p class="lede">Não somos a agência do iFood — ele é o caso mais difícil do Brasil agora, e vocês conseguem verificar tudo o que o agente concluiu.</p>
+  </section>
+
+  <!-- backup -->
   <section class="s">
-    <span class="meta"><span class="t">backup</span><span>10 / 10</span></span>
+    <span class="meta"><span class="t">backup</span><span>—</span></span>
     <span class="backup">não apresentar · abrir se perguntarem</span>
     <p class="eyebrow">O que é real e o que é simulado</p>
     <div class="chips">
-      <div><span class="chip real">real</span><span class="what">Pesquisa de mercado — Gorilla API, 1.516 conversas, <code>search_id</code> verificável</span></div>
-      <div><span class="chip real">real</span><span class="what">Contexto e entrevista — <code>/api/ingest</code> e <code>/api/interview</code>, adapter Anthropic + OpenAI</span></div>
-      <div><span class="chip real">real</span><span class="what">Roteiro e criativo — <code>/api/copy</code> e <code>/api/video</code>, providers plugáveis</span></div>
-      <div><span class="chip sim">simulado</span><span class="what">Publicação e campanha — <code>simulado: true</code> forçado pelo contrato, não escondido</span></div>
+      <div><span class="chip real">real</span><span class="what">Contexto e entrevista — <code>/api/ingest</code>, <code>/api/interview</code>, adapter Anthropic + OpenAI</span></div>
+      <div><span class="chip real">real</span><span class="what">Análise de mercado — <code>/api/market</code>, Gorilla API, 1.516 conversas, <code>search_id</code> verificável</span></div>
+      <div><span class="chip real">real</span><span class="what">Roteiro e criativo — <code>/api/copy</code>, <code>/api/video</code>, providers plugáveis</span></div>
+      <div><span class="chip sim">simulado</span><span class="what">Publicação e campanha — <code>simulado: true</code> forçado pelo contrato de tipos</span></div>
       <div><span class="chip sim">simulado</span><span class="what">Performance — ROAS de 8 semanas não cabe em 5 horas</span></div>
     </div>
-    <p class="lede">A performance roda em <span class="am">ambiente de simulação</span> — o mesmo harness que usaríamos para evals em produção. A diferença entre esconder e escolher é o que estamos mostrando aqui.</p>
+    <p class="lede">A performance roda em ambiente de simulação — o mesmo harness que usaríamos para evals em produção. <span class="y">A diferença entre esconder e escolher é o que estamos mostrando aqui.</span></p>
   </section>
 
 </div>

@@ -9,21 +9,32 @@
 ## A. O produto
 
 **1. Isso não é só um wrapper de LLM?**
-> Um wrapper recebe briefing e devolve texto. O nosso não recebe briefing — ele vai buscar
-> o que o mercado está dizendo antes de escrever uma palavra. Foram 1.516 conversas em cinco
-> redes, com `search_id` que vocês conseguem conferir. O briefing é a marca falando de si mesma;
-> a gente começa do outro lado.
+> Um wrapper recebe briefing e devolve texto. O nosso começa entendendo a marca por dentro e
+> só depois vai conferir lá fora se é isso mesmo — leu mais de mil e quinhentas conversas reais
+> em cinco plataformas antes de escrever uma linha. O briefing é a marca falando de si mesma;
+> a gente ouve os dois lados.
 
-**2. O que exatamente o agente faz sozinho?**
-> Oito etapas: pesquisa o mercado, ingere os arquivos da empresa, entrevista o time comercial,
-> fecha o diagnóstico, escreve o roteiro, produz o criativo, sobe no anúncio e lê o funil.
-> Nenhuma etapa espera humano para começar a próxima. O humano define o envelope — teto de
-> verba, claims proibidos — e só é chamado por exceção.
+**2. O que exatamente o agente faz sozinho, e em que ordem?**
+> A ordem importa. Primeiro a empresa sobe o contexto macro que quiser. Depois ele entrevista
+> as lideranças para entender a dor que ela acha que resolve. **Só então** vai ao mercado
+> verificar como ela está sendo comentada sobre aquele assunto. Aí fecha o diagnóstico,
+> escreve o roteiro, produz o criativo, sobe no anúncio e lê o funil até a venda.
+> Nenhuma etapa espera humano para começar a próxima.
 
-**3. Por que a entrevista com o comercial importa?**
-> Porque o arquivo institucional diz o que a empresa gostaria de ser. Quem vende sabe qual
+**3. Por que a pesquisa de mercado vem depois da entrevista, e não antes?**
+> Porque sem saber o que procurar, pesquisa de mercado vira ruído. A entrevista dá a hipótese —
+> qual dor a empresa acha que resolve. A pesquisa testa essa hipótese contra o que as pessoas
+> estão realmente dizendo. Inverter a ordem seria pedir para o agente adivinhar o assunto.
+
+**3b. E por que entrevistar quem vende?**
+> Porque o material institucional diz o que a empresa gostaria de ser. Quem vende sabe qual
 > objeção mata o negócio na terça-feira. São até oito perguntas, uma por vez, cada uma mirando
-> só o campo que ainda falta. É o único jeito de o diagnóstico sair verdadeiro.
+> só o campo que ainda falta.
+
+**3c. Como o agente chegou naquele criativo do iFood?**
+> Ele leu a dor antes de escrever: hora perdida na planilha e taxa que só aparece depois. Por
+> isso o criativo não promete venda — promete transparência na taxa e uma operação que o dono
+> toca sem virar a noite fazendo conta. É o ângulo que o dado pedia, não o que soaria bonito.
 
 **4. E se o agente escrever uma bobagem e queimar a marca?**
 > Ele opera dentro de um envelope: claims proibidos, teto de verba, temas vetados. E a regra
