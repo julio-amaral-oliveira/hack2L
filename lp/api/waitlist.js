@@ -20,6 +20,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'GET') {
+    res.setHeader('Cache-Control', 'no-store');
     if (!process.env.WAITLIST_KEY || req.query.key !== process.env.WAITLIST_KEY) {
       return res.status(401).json({ ok: false, error: 'unauthorized' });
     }

@@ -87,6 +87,14 @@ orquestrador coordena cada etapa, tratada como caixa preta.
 - Planejamento ponta a ponta escrito em `PLANO.md` na raiz (2026-08-08),
   com 10 tarefas (T1–T10), contratos, cronograma de 3h e roteiro da
   demo.
+- Adapter de LLM (T11): `lib/llm/` com providers `anthropic` e
+  `openai`; resolução `LLM_PROVIDER` → Claude se chave → GPT se chave.
+  Uma chave só basta para o fluxo inteiro.
+- Análise de mercado via Gorilla (T12): etapa real dentro da caixa
+  Aprender, depois da entrevista. `GORILLA_API_KEY` no `.env.local`.
+  Pesquisa como a marca é comentada sobre o assunto X e alimenta o
+  diagnóstico/criativo. Fora do escopo: etapa de métricas e otimização
+  de campanha (decisão do usuário 2026-08-08).
 
 ## Invariantes e requisitos
 

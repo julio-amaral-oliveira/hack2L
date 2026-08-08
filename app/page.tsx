@@ -7,7 +7,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { CheckCircle2, Clock, Loader2, RotateCcw } from "lucide-react";
+import { CheckCircle2, Clock, RotateCcw } from "lucide-react";
 
 import type {
   AwarenessLevel,
@@ -19,6 +19,7 @@ import type {
 } from "@/lib/contracts";
 import { usePipeline } from "@/lib/orchestrator";
 
+import { AnalysisPanel } from "@/components/pipeline/AnalysisPanel";
 import { ChatPanel } from "@/components/pipeline/ChatPanel";
 import { CopyPanel } from "@/components/pipeline/CopyPanel";
 import { DiagnosisGrid } from "@/components/pipeline/DiagnosisGrid";
@@ -78,6 +79,7 @@ export default function Home() {
     state,
     dispatch,
     setStatus,
+    callResearch,
     callCopy,
     callVideo,
     callPublish,
@@ -86,6 +88,8 @@ export default function Home() {
   } = usePipeline();
 
   const [chatKey, setChatKey] = useState(0);
+  const [researchBusy, setResearchBusy] = useState(false);
+  const [researchStatusText, setResearchStatusText] = useState("");
   const [copyBusy, setCopyBusy] = useState(false);
   const [videoBusy, setVideoBusy] = useState(false);
 
@@ -121,7 +125,8 @@ export default function Home() {
     toast.error("A entrevista falhou. Tente novamente.");
   }, [setStatus]);
 
-  // Gate humano 1: fixa o Diagnosis e dispara a geração da copy.
+  // Gate humano 1: fixa o Diagnosis e inicia a análise de mercado (Gorilla).
+  // A copy só é gerada depois que a análise for aprovada (gate humano 2).
   const handleApproveDiagnosis = useCallback(async () => {
     const { digest, partialDiagnosis } = state;
     if (!digest) return;
@@ -131,6 +136,35 @@ export default function Home() {
     }
     const diagnosis = partialDiagnosis as Diagnosis;
     dispatch({ type: "SET_DIAGNOSIS", diagnosis });
+    setResearchBusy(true);
+    setResearchStatusText("Preparando a análise de mercado…");
+    setStatus("aprender", "em_andamento");
+    try {
+      await callResearch(
+        { digest, diagnosis },
+        {
+          onStatus: (value) => setResearchStatusText(value),
+          onAnalysis: () => setStatus("aprender", "aguardando_aprovacao"),
+        }
+      );
+    } catch (err) {
+      setStatus("aprender", "erro");
+      toast.error(
+        errorMessage(
+          err,
+          "A análise de mercado falhou. Tente novamente."
+        )
+      );
+    } finally {
+      setResearchBusy(false);
+    }
+  }, [state, dispatch, setStatus, callResearch]);
+
+  // Gate humano 2 ("Aprovar e gerar copy"): a análise aprovada fecha a etapa
+  // aprender e dispara a geração da copy.
+  const handleApproveAnalysis = useCallback(async () => {
+    const { digest, diagnosis } = state;
+    if (!digest || !diagnosis) return;
     setStatus("aprender", "concluido");
     setStatus("criativo", "em_andamento");
     setCopyBusy(true);
@@ -144,7 +178,7 @@ export default function Home() {
     } finally {
       setCopyBusy(false);
     }
-  }, [state, dispatch, setStatus, callCopy]);
+  }, [state, setStatus, callCopy]);
 
   // ---- Etapa Criativo -----------------------------------------------------
 
@@ -227,8 +261,14 @@ export default function Home() {
   const handleRetry = useCallback(
     (step: StepId) => {
       if (step === "aprender") {
-        setStatus("aprender", "em_andamento");
-        setChatKey((key) => key + 1); // remonta o chat e reinicia a entrevista
+        if (state.diagnosis) {
+          // Diagnóstico já aprovado: retry da análise de mercado.
+          setStatus("aprender", "em_andamento");
+          void handleApproveDiagnosis();
+        } else {
+          setStatus("aprender", "em_andamento");
+          setChatKey((key) => key + 1); // remonta o chat e reinicia a entrevista
+        }
       } else if (step === "criativo") {
         if (state.copy) {
           runVideoGeneration();
@@ -242,8 +282,10 @@ export default function Home() {
       }
     },
     [
+      state.diagnosis,
       state.copy,
       setStatus,
+      handleApproveDiagnosis,
       runVideoGeneration,
       handleRegenerateCopy,
       handlePublish,
@@ -327,7 +369,7 @@ export default function Home() {
                   O grid se preenche ao vivo durante a entrevista.
                 </CardDescription>
               </div>
-              {status.aprender === "concluido" ? (
+              {state.diagnosis ? (
                 <Badge variant="secondary">
                   <CheckCircle2 className="size-3.5" />
                   Aprovado
@@ -341,19 +383,30 @@ export default function Home() {
             </CardHeader>
             <CardContent className="flex flex-col gap-3">
               <DiagnosisGrid diagnosis={gridDiagnosis} />
-              {status.aprender === "aguardando_aprovacao" ? (
+              {status.aprender === "aguardando_aprovacao" &&
+              !state.diagnosis ? (
                 <Button
                   type="button"
                   onClick={handleApproveDiagnosis}
-                  disabled={!podeAprovar || copyBusy}
+                  disabled={!podeAprovar}
                   className="self-start"
                 >
-                  {copyBusy ? <Loader2 className="animate-spin" /> : <CheckCircle2 />}
-                  {copyBusy ? "Gerando copy..." : "Aprovar diagnóstico"}
+                  <CheckCircle2 />
+                  Aprovar diagnóstico
                 </Button>
               ) : null}
             </CardContent>
           </Card>
+        ) : null}
+
+        {state.digest && state.diagnosis ? (
+          <AnalysisPanel
+            research={state.research}
+            running={researchBusy}
+            statusText={researchStatusText}
+            onApprove={handleApproveAnalysis}
+            onRetry={() => handleRetry("aprender")}
+          />
         ) : null}
 
         <CopyPanel

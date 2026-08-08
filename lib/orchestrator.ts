@@ -11,6 +11,7 @@ import type {
   CampaignResult,
   CopyPackage,
   Diagnosis,
+  MarketAnalysis,
   PipelineState,
   PublishResult,
   StepId,
@@ -24,6 +25,7 @@ export type PipelineAction =
   | { type: 'SET_DIGEST'; digest: BrandDigest }
   | { type: 'MERGE_PARTIAL_DIAGNOSIS'; partial: Partial<Diagnosis> }
   | { type: 'SET_DIAGNOSIS'; diagnosis: Diagnosis }
+  | { type: 'SET_RESEARCH'; research: MarketAnalysis }
   | { type: 'SET_COPY'; copy: CopyPackage }
   | { type: 'SET_VIDEO'; video: VideoGenResult }
   | { type: 'SET_PUBLISH'; publish: PublishResult }
@@ -40,6 +42,7 @@ export const initialPipelineState: PipelineState = {
   digest: null,
   partialDiagnosis: {},
   diagnosis: null,
+  research: null,
   copy: null,
   video: null,
   publish: null,
@@ -65,6 +68,8 @@ export function pipelineReducer(
       }
     case 'SET_DIAGNOSIS':
       return { ...state, diagnosis: action.diagnosis }
+    case 'SET_RESEARCH':
+      return { ...state, research: action.research }
     case 'SET_COPY':
       return { ...state, copy: action.copy }
     case 'SET_VIDEO':
@@ -95,6 +100,28 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
   return data
 }
 
+// Tipos de evento do SSE de pesquisa (ResearchEvent é definido na rota
+// app/api/research/route.ts; este espelho evita importar uma rota no cliente).
+type ResearchEvent =
+  | { type: 'status'; value: string }
+  | { type: 'analysis'; value: MarketAnalysis }
+  | { type: 'error'; message: string }
+
+/** Decodifica uma linha `data: {...}` do SSE; devolve null fora do formato. */
+function parseResearchDataLine(line: string): ResearchEvent | null {
+  const trimmed = line.trim()
+  if (!trimmed.startsWith('data:')) return null
+  const raw = trimmed.slice(5).trim()
+  if (!raw) return null
+  try {
+    const parsed = JSON.parse(raw) as ResearchEvent
+    if (parsed && typeof parsed === 'object' && 'type' in parsed) return parsed
+    return null
+  } catch {
+    return null
+  }
+}
+
 export function usePipeline() {
   const [state, dispatch] = useReducer(pipelineReducer, initialPipelineState)
 
@@ -123,6 +150,67 @@ export function usePipeline() {
       const copy = await postJson<CopyPackage>('/api/copy', input)
       dispatch({ type: 'SET_COPY', copy })
       return copy
+    },
+    []
+  )
+
+  /**
+   * Roda a análise de mercado: POST /api/research com { digest, diagnosis } e
+   * lê o SSE (mesmo padrão da entrevista). Eventos `status` atualizam o
+   * callback onStatus; o evento `analysis` faz SET_RESEARCH e chama
+   * onAnalysis; evento `error` lança Error com a mensagem.
+   */
+  const callResearch = useCallback(
+    async (
+      input: { digest: BrandDigest; diagnosis: Diagnosis },
+      callbacks: {
+        onStatus: (value: string) => void
+        onAnalysis: (research: MarketAnalysis) => void
+      }
+    ): Promise<MarketAnalysis> => {
+      const res = await fetch('/api/research', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+      })
+      if (!res.ok || !res.body) {
+        throw new Error(
+          `Falha na análise de mercado (HTTP ${res.status}). Tente novamente.`
+        )
+      }
+
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+      let analysis: MarketAnalysis | null = null
+      let errorMessage: string | null = null
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop() ?? ''
+        for (const line of lines) {
+          const event = parseResearchDataLine(line)
+          if (!event) continue
+          if (event.type === 'status') {
+            callbacks.onStatus(event.value)
+          } else if (event.type === 'analysis') {
+            analysis = event.value
+            dispatch({ type: 'SET_RESEARCH', research: event.value })
+            callbacks.onAnalysis(event.value)
+          } else if (event.type === 'error') {
+            errorMessage = event.message
+          }
+        }
+      }
+
+      if (analysis !== null) return analysis
+      throw new Error(
+        errorMessage ??
+          'A análise de mercado terminou sem resultado. Tente novamente.'
+      )
     },
     []
   )
@@ -165,6 +253,7 @@ export function usePipeline() {
     dispatch,
     setStatus,
     callIngest,
+    callResearch,
     callCopy,
     callVideo,
     callPublish,
