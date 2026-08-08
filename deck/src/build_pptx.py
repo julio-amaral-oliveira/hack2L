@@ -83,12 +83,7 @@ s = slide()
 label(s, "Hack2L · AI Agents · Canastra Ventures", M, 0.6, 8)
 text(s, [[("A IA ensinou todo mundo a fazer anúncio.", CRU, True)],
          [("E todo anúncio a parecer igual.", AMARELO, True)]],
-     M, 1.5, W - 2 * M, 2.2, size=40, line=1.0)
-text(s, "Produzir não é mais a vantagem. Ser reconhecível é.",
-     M, 4.0, 8.6, 1.0, size=26, bold=True, line=1.05)
-text(s, "Quando a mesma lógica e o mesmo prompt alimentam todo mundo, as marcas viram "
-        "variação do mesmo template. Produzir ficou barato. Uma marca genérica continua cara.",
-     M, 5.25, 8.6, 1.2, size=13, color=DIM, line=1.35)
+     M, 2.6, W - 2 * M, 2.6, size=48, line=1.0)
 s.notes_slide.notes_text_frame.text = "0:00–0:25 — Abrir pela tensão. Não explicar demais."
 
 # ------------------------------------------------- 2 · o sistema de agentes
@@ -114,9 +109,8 @@ for i, (n, ttl, desc, rota) in enumerate(AG):
     text(s, ttl, x + 0.22, y + 0.42, cw - 0.44, 0.3, size=14, bold=True)
     text(s, desc, x + 0.22, y + 0.78, cw - 0.44, 0.7, size=9.5, color=DIM, line=1.25)
     text(s, rota, x + 0.22, y + ch - 0.34, cw - 0.44, 0.2, size=8, color=CINZA, font=MONO)
-text(s, [[("Nenhum agente conhece o outro — cada um recebe e devolve um contrato tipado. ", DIM, False),
-          ("Nenhuma etapa espera humano para começar a próxima.", AMARELO, False)]],
-     M, 6.7, W - 2 * M, 0.5, size=12, color=DIM, line=1.3)
+text(s, "Nenhuma etapa espera humano para começar a próxima.",
+     M, 6.7, W - 2 * M, 0.5, size=13, color=AMARELO, line=1.3)
 s.notes_slide.notes_text_frame.text = "0:25–0:50 — É o slide que responde ao critério do hackathon. Onde a IA trabalha."
 
 # ------------------------------------------------------- 3 · começa na marca
