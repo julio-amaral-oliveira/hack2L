@@ -153,13 +153,22 @@
     :root, :root[data-theme="dark"], :root[data-theme="light"] {
       --bg:#fff; --fg:#0A0A0A; --dim:#3A3833; --faint:#6E6C66;
       --line:rgba(10,10,10,.3); --line-2:rgba(10,10,10,.12); --panel:#fff; --amarelo:#B58A00; --logo-invert: 1; }
-    body::after, .ctl { display: none; }
+    /* O badge de tempo é apoio de ensaio: fora do PDF que vai para terceiros.
+       Ele é position:absolute e, sem isso, cai por cima do título na impressão. */
+    body::after, .ctl, .meta { display: none !important; }
     .deck { height: auto; overflow: visible; scroll-snap-type: none; }
-    .s { min-height: 0; height: auto; break-after: page; page-break-after: always;
-      padding: 0 0 1.2rem; justify-content: flex-start; gap: 1rem; background:#fff !important; color:#0A0A0A !important; }
+    /* Preenche a página: A4 paisagem tem 210mm de altura, menos 24mm de margem. */
+    .s { min-height: 176mm; height: auto; break-after: page; page-break-after: always;
+      break-inside: avoid; padding: 0; justify-content: center; gap: 1.1rem;
+      background:#fff !important; color:#0A0A0A !important; }
     .s:last-child { break-after: auto; page-break-after: auto; }
-    .s > * { animation: none !important; }
-    h1 { font-size: 2.7rem; } h2 { font-size: 1.8rem; } .metrics .v { font-size: 1.7rem; }
+    .s > * { animation: none !important; max-width: 100%; }
+    h1 { font-size: 3.4rem; } h2 { font-size: 2.2rem; }
+    .lede { font-size: 1.05rem; max-width: 62ch; }
+    .metrics .v { font-size: 2.1rem; }
+    .agents .st { font-size: 1.05rem; } .agents .ia { font-size: .88rem; }
+    .funnel .g { font-size: 1.1rem; } .funnel .act { font-size: .82rem; }
+    .cmp .out { font-size: 1.2rem; }
     .agents > div, .dims > div, .cmp > div, .metrics div, .funnel > div { background:#fff; }
     .funnel { grid-template-columns: repeat(5,1fr); }
     .funnel .last { background:#fff; } .funnel .last .g { color:#B58A00; }
